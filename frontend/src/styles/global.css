@@ -78,6 +78,11 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 14px;
+  /* Global scale down from default 16px */
+}
+
 body {
   margin: 0;
   font-family: var(--font-main);
