@@ -1,0 +1,41 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\dsath\\OneDrive\\Desktop\\AD\\CertiChain\\smart-contract\\contracts\\CertiChain.sol": {
+      "lastModificationDate": 1765696360227,
+      "contentHash": "3c6d251a06a5eefb4d757e586394386e",
+      "sourceName": "contracts/CertiChain.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "CertiChain"
+      ]
+    }
+  }
+}

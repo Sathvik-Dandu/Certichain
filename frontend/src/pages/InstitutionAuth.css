@@ -1,0 +1,349 @@
+.institution-auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px);
+    /* Adjust based on navbar height */
+    background: var(--background);
+    padding: 2rem;
+    transition: var(--transition);
+}
+
+.institution-auth-container {
+    position: relative;
+    width: 1400px;
+    /* Increased significantly */
+    height: 900px;
+    /* Increased significantly */
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    color: var(--text);
+    transition: var(--transition);
+}
+
+/* --- Form Box (Inputs) --- */
+.institution-auth-container .form-box {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background: transparent;
+    z-index: 50;
+    /* Higher than shapes */
+    pointer-events: all;
+    /* Ensure clickable */
+}
+
+.institution-auth-container .form-box.Login {
+    left: 0;
+    padding: 0 100px;
+    /* Increased padding */
+}
+
+.institution-auth-container .form-box.Login .animation {
+    transform: translateX(0%);
+    transition: .6s ease-in-out;
+    opacity: 1;
+}
+
+.institution-auth-container.active .form-box.Login .animation {
+    transform: translateX(-120%);
+    opacity: 0;
+}
+
+.institution-auth-container .form-box.Register {
+    right: 0;
+    padding: 0 100px;
+    /* Increased padding */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Scrollbar for register form if content overflows */
+.institution-auth-container .form-box.Register::-webkit-scrollbar {
+    width: 4px;
+}
+
+.institution-auth-container .form-box.Register::-webkit-scrollbar-thumb {
+    background: var(--secondary);
+    border-radius: 4px;
+}
+
+.institution-auth-container .form-box.Register .animation {
+    transform: translateX(120%);
+    transition: .6s ease-in-out;
+    opacity: 0;
+}
+
+.institution-auth-container.active .form-box.Register .animation {
+    transform: translateX(0%);
+    opacity: 1;
+}
+
+.institution-auth-container .form-box h2 {
+    font-size: 3.5rem;
+}
+
+/* --- Input Fields --- */
+.institution-auth-container .input-box {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    /* Taller inputs */
+    margin-top: 30px;
+}
+
+.institution-auth-container .input-box.file-input {
+    height: auto;
+    margin-top: 30px;
+}
+
+.institution-auth-container .input-box input:not([type="file"]) {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1.35rem;
+    /* Larger font */
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid var(--text-light);
+    padding-right: 35px;
+    transition: .5s;
+}
+
+.institution-auth-container .input-box input:not([type="file"]):focus,
+.institution-auth-container .input-box input:not([type="file"]):valid {
+    border-bottom: 2px solid var(--secondary);
+}
+
+/* Autofill fixes */
+.institution-auth-container .input-box input:-webkit-autofill,
+.institution-auth-container .input-box input:-webkit-autofill:hover,
+.institution-auth-container .input-box input:-webkit-autofill:focus,
+.institution-auth-container .input-box input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--surface) inset !important;
+    -webkit-text-fill-color: var(--text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.institution-auth-container .input-box label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-size: 1.35rem;
+    /* Larger font */
+    color: var(--text-secondary);
+    transition: .5s;
+    pointer-events: none;
+}
+
+.institution-auth-container .input-box input:focus~label,
+.institution-auth-container .input-box input:valid~label,
+.institution-auth-container .input-box input[value]:not([value=""])~label {
+    top: -5px;
+    font-size: 1rem;
+    color: var(--secondary);
+}
+
+.institution-auth-container .input-box .icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    font-size: 1.5rem;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.institution-auth-container .input-box input:focus~.icon,
+.institution-auth-container .input-box input:valid~.icon {
+    color: var(--secondary);
+}
+
+/* --- Submit Button --- */
+.institution-auth-container .btn {
+    position: relative;
+    width: 100%;
+    height: 55px;
+    /* Taller button */
+    background: transparent;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border: 2px solid var(--secondary);
+    overflow: hidden;
+    z-index: 1;
+    color: var(--text);
+    margin-top: 2rem;
+    transition: color 0.5s;
+}
+
+.institution-auth-container .btn:hover {
+    color: #fff;
+}
+
+.institution-auth-container .btn::before {
+    content: "";
+    position: absolute;
+    height: 300%;
+    width: 100%;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    top: -100%;
+    left: 0;
+    z-index: -1;
+    transition: .5s;
+}
+
+.institution-auth-container .btn:hover::before {
+    top: 0;
+}
+
+.institution-auth-container .regi-link {
+    font-size: 1.15rem;
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--text);
+}
+
+.institution-auth-container .regi-link a {
+    text-decoration: none;
+    color: var(--secondary);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.institution-auth-container .regi-link a:hover {
+    text-decoration: underline;
+}
+
+/* --- Info Content (Overlays) --- */
+.institution-auth-container .info-content {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: #fff;
+    z-index: 20;
+}
+
+.institution-auth-container .info-content.Login {
+    right: 0;
+    text-align: right;
+    padding: 0 60px 60px 150px;
+    pointer-events: none;
+}
+
+.institution-auth-container .info-content.Login .animation {
+    transform: translateX(0);
+    transition: .6s ease;
+    opacity: 1;
+}
+
+.institution-auth-container.active .info-content.Login .animation {
+    transform: translateX(120%);
+    opacity: 0;
+}
+
+.institution-auth-container .info-content.Register {
+    left: 0;
+    text-align: left;
+    padding: 0 150px 60px 60px;
+    pointer-events: none;
+}
+
+.institution-auth-container .info-content.Register .animation {
+    transform: translateX(-120%);
+    transition: .6s ease;
+    opacity: 0;
+}
+
+.institution-auth-container.active .info-content.Register .animation {
+    transform: translateX(0%);
+    opacity: 1;
+}
+
+.institution-auth-container .info-content h2 {
+    text-transform: uppercase;
+    font-size: 3.5rem;
+    /* Massive Header */
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+}
+
+.institution-auth-container .info-content p {
+    font-size: 1.35rem;
+    /* Larger body text */
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+}
+
+/* --- Curved Shapes --- */
+.institution-auth-container .curved-shape {
+    position: absolute;
+    right: 0;
+    top: -5px;
+    height: 1200px;
+    /* Increased cover */
+    width: 1600px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    transform: rotate(10deg) skewY(40deg);
+    transform-origin: bottom right;
+    transition: 0.8s ease;
+    z-index: 10;
+    /* Lower than form-box */
+}
+
+.institution-auth-container.active .curved-shape {
+    transform: rotate(0deg) skewY(0deg);
+}
+
+.institution-auth-container .curved-shape2 {
+    position: absolute;
+    left: 250px;
+    top: 100%;
+    height: 1200px;
+    width: 1600px;
+    background: var(--primary);
+    border-top: 3px solid var(--secondary);
+    transform: rotate(0deg) skewY(0deg);
+    transform-origin: bottom left;
+    transition: 0.8s ease;
+    z-index: 10;
+}
+
+.institution-auth-container.active .curved-shape2 {
+    transform: rotate(-11deg) skewY(-41deg);
+}
+
+/* File Upload */
+.institution-auth-container .file-upload-label {
+    background-color: var(--surface-alt);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 1rem;
+    font-size: 1.1rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.institution-auth-container .file-upload-wrapper:hover .file-upload-label {
+    border-color: var(--secondary);
+    background-color: var(--background);
+}

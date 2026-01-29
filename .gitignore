@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+__pycache__/
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+build/
+
+# DL Service Models (Too large for GitHub)
+dl_service/models/*.pt
+dl_service/models/*.pth
+*.pt
+*.pth
+
+# Uploads
+uploads/
+dl_service/data/raw/
+dl_service/temp_uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+error_log.txt
