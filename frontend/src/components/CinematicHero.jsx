@@ -18,13 +18,14 @@ const CinematicHero = () => {
 
     useEffect(() => {
         const loadImages = async () => {
-            const modules = import.meta.glob('../assets/hero-sequence/*.jpg', { eager: true, as: 'url' });
-
-            const keys = Object.keys(modules).sort();
             const loadedImages = [];
+            const maxFrames = 40;
 
-            for (const path of keys) {
-                const src = modules[path];
+            for (let i = 1; i <= maxFrames; i++) {
+                const idx = String(i).padStart(3, '0');
+                const filename = `ezgif-frame-${idx}.jpg`;
+                const src = `/hero-sequence/${filename}`;
+
                 await new Promise((resolve) => {
                     const img = new Image();
                     img.src = src;
@@ -32,14 +33,14 @@ const CinematicHero = () => {
                         loadedImages.push(img);
                         resolve();
                     };
-                    img.onerror = () => {
-                        resolve();
-                    };
+                    img.onerror = () => resolve();
                 });
             }
+
             setImages(loadedImages);
             setIsLoaded(true);
         };
+
         loadImages();
     }, []);
 
@@ -202,7 +203,7 @@ const CinematicHero = () => {
                 }
                 
                 .cinematic-title {
-                    font-size: 4rem;
+                    font-size: 2.8rem;
                     font-weight: 800;
                     color: white;
                     text-align: center;
@@ -211,7 +212,7 @@ const CinematicHero = () => {
                 }
 
                 .cinematic-subtitle-large {
-                    font-size: 3.5rem;
+                    font-size: 2rem;
                     font-weight: 700;
                     color: white;
                     text-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -222,10 +223,10 @@ const CinematicHero = () => {
                     background: rgba(15, 23, 42, 0.6);
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
-                    padding: 2.5rem 3.5rem;
-                    border-radius: 24px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+                    padding: 1.25rem 1.75rem;
+                    border-radius: 18px;
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.45);
                 }
 
                 .hero-overlay-stage {
@@ -320,18 +321,19 @@ const CinematicHero = () => {
 
                 @media (max-width: 768px) {
                     .cinematic-title {
-                        font-size: 2.5rem;
+                        font-size: 1.8rem;
                     }
                     .cinematic-subtitle-large {
-                        font-size: 2rem;
+                        font-size: 1.2rem;
                     }
                     .hero-glass-card {
-                        padding: 1.5rem;
+                        padding: 1rem;
                         width: 90%;
+                        border-radius: 12px;
                     }
                     .verified-badge {
-                        font-size: 1.2rem;
-                        padding: 0.8rem 1.5rem;
+                        font-size: 1rem;
+                        padding: 0.6rem 1rem;
                     }
                 }
             `}</style>
