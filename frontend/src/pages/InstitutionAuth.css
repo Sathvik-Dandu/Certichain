@@ -11,10 +11,8 @@
 
 .institution-auth-container {
     position: relative;
-    width: 1400px;
-    /* Increased significantly */
-    height: 900px;
-    /* Increased significantly */
+    width: 1000px;
+    height: 600px;
     border: 2px solid var(--border);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
@@ -89,7 +87,7 @@
 }
 
 .institution-auth-container .form-box h2 {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
 }
 
 /* --- Input Fields --- */
@@ -112,8 +110,7 @@
     background: transparent;
     border: none;
     outline: none;
-    font-size: 1.35rem;
-    /* Larger font */
+    font-size: 1.1rem;
     color: var(--text);
     font-weight: 600;
     border-bottom: 2px solid var(--text-light);
@@ -141,8 +138,7 @@
     top: 50%;
     left: 0;
     transform: translateY(-50%);
-    font-size: 1.35rem;
-    /* Larger font */
+    font-size: 1.1rem;
     color: var(--text-secondary);
     transition: .5s;
     pointer-events: none;
@@ -179,7 +175,7 @@
     background: transparent;
     border-radius: 40px;
     cursor: pointer;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 700;
     border: 2px solid var(--secondary);
     overflow: hidden;
@@ -278,17 +274,16 @@
 
 .institution-auth-container .info-content h2 {
     text-transform: uppercase;
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     /* Massive Header */
     line-height: 1.2;
     color: #fff;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     font-weight: 800;
 }
 
 .institution-auth-container .info-content p {
-    font-size: 1.35rem;
-    /* Larger body text */
+    font-size: 1rem;
     color: rgba(255, 255, 255, 0.9);
     line-height: 1.6;
 }
@@ -298,9 +293,9 @@
     position: absolute;
     right: 0;
     top: -5px;
-    height: 1200px;
+    height: 800px;
     /* Increased cover */
-    width: 1600px;
+    width: 1200px;
     background: linear-gradient(45deg, var(--primary), var(--secondary));
     transform: rotate(10deg) skewY(40deg);
     transform-origin: bottom right;
@@ -317,8 +312,8 @@
     position: absolute;
     left: 250px;
     top: 100%;
-    height: 1200px;
-    width: 1600px;
+    height: 800px;
+    width: 1200px;
     background: var(--primary);
     border-top: 3px solid var(--secondary);
     transform: rotate(0deg) skewY(0deg);
