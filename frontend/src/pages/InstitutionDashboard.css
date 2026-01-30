@@ -180,11 +180,13 @@
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     border-radius: var(--radius-sm);
     font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: var(--transition);
+    display: inline-block;
 }
 
 .inst-btn-remove:hover {
@@ -195,10 +197,10 @@
     background: var(--primary);
     color: white;
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     border-radius: var(--radius-sm);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-left: 0.5rem;
     transition: var(--transition);
     display: inline-block;
