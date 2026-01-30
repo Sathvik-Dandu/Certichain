@@ -19,22 +19,45 @@ const CinematicHero = () => {
     useEffect(() => {
         const loadImages = async () => {
             const loadedImages = [];
-            const maxFrames = 40;
 
-            for (let i = 1; i <= maxFrames; i++) {
-                const idx = String(i).padStart(3, '0');
-                const filename = `ezgif-frame-${idx}.jpg`;
-                const src = `/hero-sequence/${filename}`;
+            // First try to import from src assets (works when images are inside src/assets)
+            try {
+                const modules = import.meta.glob('../assets/hero-sequence/*.jpg', { eager: true, as: 'url' });
+                const keys = Object.keys(modules).sort();
+                for (const path of keys) {
+                    const src = modules[path];
+                    await new Promise((resolve) => {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => {
+                            loadedImages.push(img);
+                            resolve();
+                        };
+                        img.onerror = () => resolve();
+                    });
+                }
+            } catch (e) {
+                // ignore and fall through to public fallback
+            }
 
-                await new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = () => {
-                        loadedImages.push(img);
-                        resolve();
-                    };
-                    img.onerror = () => resolve();
-                });
+            // If nothing loaded, try to load from public folder (/hero-sequence/...)
+            if (loadedImages.length === 0) {
+                const maxFrames = 40; // conservative default
+                for (let i = 1; i <= maxFrames; i++) {
+                    const idx = String(i).padStart(3, '0');
+                    const filename = `ezgif-frame-${idx}.jpg`;
+                    const src = `/hero-sequence/${filename}`;
+                    // attempt to load image from public
+                    await new Promise((resolve) => {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => {
+                            loadedImages.push(img);
+                            resolve();
+                        };
+                        img.onerror = () => resolve();
+                    });
+                }
             }
 
             setImages(loadedImages);
