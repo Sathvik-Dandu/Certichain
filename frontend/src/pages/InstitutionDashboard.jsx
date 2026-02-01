@@ -115,6 +115,9 @@ function InstitutionDashboard() {
                     onClick={() => setActiveTab("requests")}
                 >
                     Pending Requests
+                    {stats?.pendingRequests > 0 && (
+                        <span className="inst-badge">{stats.pendingRequests}</span>
+                    )}
                 </button>
             </div>
 
@@ -125,6 +128,11 @@ function InstitutionDashboard() {
                     <div className="inst-stats-card">
                         <div className="inst-stats-value">{stats.totalCertificates}</div>
                         <div className="inst-stats-label">Total Certificates Issued</div>
+                    </div>
+
+                    <div className="inst-stats-card" onClick={() => setActiveTab("requests")} style={{ cursor: "pointer" }}>
+                        <div className="inst-stats-value">{stats.pendingRequests || 0}</div>
+                        <div className="inst-stats-label">Pending Requests</div>
                     </div>
 
                     <div className="inst-charts-grid">

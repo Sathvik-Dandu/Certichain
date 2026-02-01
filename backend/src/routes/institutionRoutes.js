@@ -4,6 +4,7 @@ const router = express.Router();
 const Institution = require("../models/Institution");
 const institutionController = require("../controllers/institutionController");
 const Certificate = require("../models/Certificate");
+const CertificateRequest = require("../models/CertificateRequest");
 const { protect, requireInstitution } = require("../middleware/authMiddleware");
 const mongoose = require("mongoose");
 const { isAcademicInstitutionEmail } = require("../utils/emailValidator");
@@ -14,7 +15,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "../../uploads/institutions")); 
+        cb(null, path.join(__dirname, "../../uploads/institutions"));
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -28,10 +29,10 @@ const upload = multer({ storage });
 
 router.post(
     "/register",
-    upload.array("documents", 10), 
+    upload.array("documents", 10),
     async (req, res, next) => {
         const { email } = req.body;
-        
+
         if (email && !isAcademicInstitutionEmail(email)) {
             return res.status(400).json({
                 message: "Only institutions with official academic email domains (.ac.in, .edu, etc.) are allowed to register.",
@@ -84,7 +85,7 @@ router.delete(
         try {
             const cert = await Certificate.findOne({
                 certificateId: req.params.certificateId,
-                institution: req.user.id, 
+                institution: req.user.id,
             });
 
             if (!cert) {
@@ -109,16 +110,21 @@ router.get(
     requireInstitution,
     async (req, res) => {
         try {
-            
+
             const institutionId = req.user.id;
 
-            
+
             const totalCertificates = await Certificate.countDocuments({
                 institution: institutionId,
                 $or: [{ status: "ACTIVE" }, { status: { $exists: false } }],
             });
 
-            
+            const pendingRequests = await CertificateRequest.countDocuments({
+                institution: institutionId,
+                status: "PENDING",
+            });
+
+
             const certificatesPerYear = await Certificate.aggregate([
                 {
                     $match: {
@@ -135,7 +141,7 @@ router.get(
                 { $sort: { _id: 1 } },
             ]);
 
-            
+
             const certificatesPerBranch = await Certificate.aggregate([
                 {
                     $match: {
@@ -153,6 +159,7 @@ router.get(
 
             res.json({
                 totalCertificates,
+                pendingRequests,
                 certificatesPerYear,
                 certificatesPerBranch,
             });
