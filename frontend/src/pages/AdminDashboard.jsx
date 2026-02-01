@@ -96,18 +96,21 @@ export default function AdminDashboard() {
                     <td>{inst.shortCode}</td>
                     <td>
                       {inst.documents && inst.documents.length > 0 ? (
-                        inst.documents.map((doc, idx) => (
-                          <div key={idx}>
-                            <a
-                              href={`http://localhost:5000${doc}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="doc-link"
-                            >
-                              Document {idx + 1}
-                            </a>
-                          </div>
-                        ))
+                        inst.documents.map((doc, idx) => {
+                          const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "");
+                          return (
+                            <div key={idx}>
+                              <a
+                                href={`${baseUrl}${doc}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="doc-link"
+                              >
+                                Document {idx + 1}
+                              </a>
+                            </div>
+                          );
+                        })
                       ) : (
                         <span className="text-muted">No docs</span>
                       )}
