@@ -60,10 +60,11 @@ npm install
 ```
 
 **Configuration (.env)**
-Create a `.env` file in the `frontend/` directory:
+Create a `.env` file in the `frontend/` directory (or set in Vercel Environment Variables):
 
 ```env
-VITE_API_URL=http://localhost:5000/api
+# MUST include /api at the end
+VITE_API_URL=https://your-backend-url.onrender.com/api
 ```
 
 **Run Frontend**
