@@ -115,8 +115,7 @@ export default function VerifyPortal() {
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || err.message || "Verification failed.";
-      const status = err.response?.status || "Net";
-      setIntegrityError(`Error (${status}): ${msg}`);
+      setIntegrityError(msg);
     } finally {
       setVerifyingIntegrity(false);
     }
@@ -315,13 +314,13 @@ export default function VerifyPortal() {
                 <div className="mt-8 border-t border-border pt-6 animate-fade-in">
                   <h3 className="text-center mb-6">Verification Results</h3>
 
-                  {integrityResult.hashMatch ? (
+                  {integrityResult.valid ? (
                     // SUCCESS STATE
                     <div className="p-6 rounded border bg-green-500/10 border-success">
                       <div className="flex flex-col items-center gap-4 text-center">
                         <div>
                           <h4 className="text-2xl font-bold text-success mb-2">
-                            Integrity Verified
+                            {integrityResult.message}
                           </h4>
                           <p className="text-lg text-text-secondary font-medium">
                             The uploaded file is identical to the original issued certificate.
@@ -341,7 +340,7 @@ export default function VerifyPortal() {
                       </div>
                     </div>
                   ) : (
-                    // FAILURE STATE
+                    // FAILURE STATES (Specific Messages)
                     <div className="p-6 rounded border bg-red-500/10 border-danger">
                       <div className="flex flex-col items-center gap-4 text-center">
                         <div>
@@ -349,10 +348,12 @@ export default function VerifyPortal() {
                             Verification Failed
                           </h4>
                           <p className="text-lg text-text-primary font-bold">
-                            The provided certificate is not genuine.
+                            {integrityResult.message}
                           </p>
                           <p className="text-md text-text-secondary mt-1">
-                            The uploaded file does NOT match the original record. It may have been tampered with.
+                            {integrityResult.status === "MISMATCH" && "The content of the file does not match the blockchain record for this ID."}
+                            {integrityResult.status === "WRONG_ID" && "Did you enter the correct Certificate ID?"}
+                            {integrityResult.status === "INVALID" && "The document may be forged or the ID is completely incorrect."}
                           </p>
                         </div>
                       </div>

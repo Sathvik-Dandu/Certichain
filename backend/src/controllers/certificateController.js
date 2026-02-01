@@ -421,19 +421,12 @@ exports.verifyFileIntegrity = async (req, res) => {
         const { certificateId } = req.body;
 
         if (!req.file) {
-            return res.status(400).json({ message: "No certificate file uploaded" });
+            return res.status(400).json({ valid: false, message: "No certificate file uploaded" });
         }
         if (!certificateId) {
-            // Clean up uploaded file if validation fails
+            // Clean up uploaded file
             try { fs.unlinkSync(req.file.path); } catch (e) { }
-            return res.status(400).json({ message: "Certificate ID is required" });
-        }
-
-        const cert = await Certificate.findOne({ certificateId }).populate("institution", "name");
-
-        if (!cert) {
-            try { fs.unlinkSync(req.file.path); } catch (e) { }
-            return res.status(404).json({ message: "Certificate not found" });
+            return res.status(400).json({ valid: false, message: "Certificate ID is required" });
         }
 
         // Compute SHA-256 hash of the uploaded file
@@ -443,27 +436,62 @@ exports.verifyFileIntegrity = async (req, res) => {
         // Clean up file after hashing
         try { fs.unlinkSync(req.file.path); } catch (e) { }
 
-        const hashMatch = (uploadedFileHash === cert.fileHash);
+        // 1. Try to find the certificate by ID
+        const certById = await Certificate.findOne({ certificateId }).populate("institution", "name");
 
-        res.json({
-            hashMatch,
-            details: {
-                studentName: cert.studentName,
-                institutionName: cert.institutionName,
-                course: cert.courseName,
-                year: cert.passOutYear,
-                issuedAt: cert.createdAt,
-                fileHash: cert.fileHash,
-                uploadedHash: uploadedFileHash
+        if (certById) {
+            // 2. Certificate exists, check if hash matches
+            if (certById.fileHash === uploadedFileHash) {
+                return res.json({
+                    valid: true,
+                    status: "GENUINE",
+                    message: "Certificate is Genuine",
+                    details: {
+                        studentName: certById.studentName,
+                        institutionName: certById.institutionName, // Use stored name from schema
+                        course: certById.courseName,
+                        year: certById.passOutYear,
+                        issuedAt: certById.createdAt,
+                        certificateId: certById.certificateId
+                    }
+                });
+            } else {
+                // ID exists, but Hash mismatch
+                return res.json({
+                    valid: false,
+                    status: "MISMATCH",
+                    message: "The uploaded document does not match the provided Certificate ID."
+                });
             }
-        });
+        } else {
+            // 3. Certificate ID Not Found.
+            // Check if this file (hash) belongs to ANY other certificate?
+            const certByHash = await Certificate.findOne({ fileHash: uploadedFileHash });
+
+            if (certByHash) {
+                // Hash matches a different certificate
+                return res.json({
+                    valid: false,
+                    status: "WRONG_ID",
+                    message: `The uploaded document belongs to a different certificate ID (${certByHash.certificateId}), not the one provided.`
+                });
+            } else {
+                // Neither ID nor Hash matches anything
+                return res.json({
+                    valid: false,
+                    status: "INVALID",
+                    message: "Verification Failed. Certificate ID invalid and document not recognized."
+                });
+            }
+        }
 
     } catch (err) {
         if (req.file) {
             try { fs.unlinkSync(req.file.path); } catch (e) { }
         }
         console.error("Integrity Verify Error:", err);
-        res.status(500).json({ message: "Server error verifying integrity" });
+        // Return 200 with error status so frontend displays message properly instead of catching 500
+        res.json({ valid: false, message: "Server error verifying integrity." });
     }
 };
 
