@@ -56,7 +56,7 @@ export default function RequestCertificate() {
     useEffect(() => {
         const fetchInsts = async () => {
             try {
-                const res = await api.get("/public/institutions");
+                const res = await api.get("/institutions/public/list");
                 setInstitutions(res.data);
             } catch (e) {
                 console.error("Failed to load institutions");

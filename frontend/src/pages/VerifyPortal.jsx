@@ -38,7 +38,7 @@ export default function VerifyPortal() {
   useEffect(() => {
     const fetchInstitutions = async () => {
       try {
-        const res = await api.get("/public/institutions");
+        const res = await api.get("/institutions/public/list");
         setInstitutions(res.data);
       } catch (err) {
         console.error("Failed to load institutions", err);
@@ -212,7 +212,7 @@ export default function VerifyPortal() {
                   >
                     <option value="">Select Institution</option>
                     {institutions.map((inst) => (
-                      <option key={inst._id} value={inst.shortCode}>
+                      <option key={inst._id} value={inst.name}>
                         {inst.name}
                       </option>
                     ))}
