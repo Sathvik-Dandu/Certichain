@@ -1,15 +1,29 @@
 const nodemailer = require("nodemailer");
 
 // Create reusable transporter object using the default SMTP transport
+// Create reusable transporter object using explicit SMTP transport for better production support
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER, // e.g., yourgmail@gmail.com
-    pass: process.env.EMAIL_PASS, // e.g., your-app-password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
+const checkEmailConfig = () => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn("⚠️ EMAIL SERVICE WARNING: EMAIL_USER or EMAIL_PASS environment variables are missing.");
+    console.warn("   Emails will NOT be sent. Please configure them in your .env or deployment settings.");
+    return false;
+  }
+  return true;
+};
+
 exports.sendVerificationEmail = async (to, studentName, certificateUrl, details) => {
+  if (!checkEmailConfig()) return false;
+
   try {
     const info = await transporter.sendMail({
       from: `"CertiChain Team" <${process.env.EMAIL_USER}>`,
