@@ -109,6 +109,13 @@ exports.registerInstitution = async (req, res) => {
 
         const token = generateToken(institution);
 
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         res.status(201).json({
             message: "Institution registration submitted. Please complete your profile.",
             institution: {
@@ -157,6 +164,13 @@ exports.loginInstitution = async (req, res) => {
         }
 
         const token = generateToken(inst);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
 
         res.json({
             message: "Login successful",
@@ -235,6 +249,14 @@ exports.googleLogin = async (req, res) => {
 
 
             const tempToken = generateToken(inst);
+
+            res.cookie("token", tempToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+
             return res.status(200).json({
                 message: "Registered via Google. Please complete your profile.",
                 institution: {
@@ -257,6 +279,13 @@ exports.googleLogin = async (req, res) => {
         }
 
         const jwtToken = generateToken(inst);
+
+        res.cookie("token", jwtToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
 
         res.json({
             message: "Login successful",
