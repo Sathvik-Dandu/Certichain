@@ -114,7 +114,7 @@ function InstitutionDashboard() {
                     className={`inst-tab ${activeTab === "requests" ? "active" : ""}`}
                     onClick={() => setActiveTab("requests")}
                 >
-                    Pending Requests
+                    Pending Requests {stats ? `(${stats.pendingRequests || 0})` : ""}
                     {stats?.pendingRequests > 0 && (
                         <span className="inst-badge">{stats.pendingRequests}</span>
                     )}
