@@ -14,10 +14,10 @@ const { issueCertificate, bulkIssueCertificates } = require("../controllers/cert
 const { getInstitutionRequests, rejectRequest } = require("../controllers/requestController");
 
 
-const uploadDir = path.join(__dirname, "../../uploads/certificates");
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+const os = require("os");
+
+// Use system temp directory for better deployment compatibility (Render/Vercel)
+const uploadDir = os.tmpdir();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

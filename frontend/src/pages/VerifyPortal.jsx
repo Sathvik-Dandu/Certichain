@@ -108,7 +108,9 @@ export default function VerifyPortal() {
       formData.append("certificateId", integrityId);
       formData.append("certificateFile", integrityFile);
 
-      const res = await api.post("/certificates/public/verify-file-integrity", formData);
+      const res = await api.post("/certificates/public/verify-file-integrity", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       setIntegrityResult(res.data);
     } catch (err) {
       console.error(err);
