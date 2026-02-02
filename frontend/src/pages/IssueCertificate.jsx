@@ -382,7 +382,9 @@ export default function IssueCertificate() {
                   type="number"
                   name="passOutYear"
                   className="form-input"
-                  placeholder="e.g. 2025"
+                  placeholder="YYYY"
+                  min="1900"
+                  max="2100"
                   value={form.passOutYear}
                   onChange={handleChange}
                   required
@@ -460,7 +462,9 @@ export default function IssueCertificate() {
                 type="number"
                 name="passOutYear"
                 className="form-input"
-                placeholder="e.g. 2025"
+                placeholder="YYYY"
+                min="1900"
+                max="2100"
                 value={bulkForm.passOutYear}
                 onChange={handleBulkChange}
                 required

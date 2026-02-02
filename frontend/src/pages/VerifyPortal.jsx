@@ -221,8 +221,12 @@ export default function VerifyPortal() {
 
                 <div className="form-group">
                   <label className="form-label">Year of Passing</label>
-                  <select
-                    className="form-select"
+                  <input
+                    type="number"
+                    className="form-input"
+                    placeholder="YYYY"
+                    min="1900"
+                    max="2100"
                     value={filters.year}
                     onChange={(e) =>
                       setFilters((prev) => ({
@@ -230,12 +234,7 @@ export default function VerifyPortal() {
                         year: e.target.value,
                       }))
                     }
-                  >
-                    <option value="">Year</option>
-                    {[2023, 2024, 2025, 2026].map((y) => (
-                      <option key={y} value={y}>{y}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div className="form-group">

@@ -209,10 +209,17 @@ export default function RequestCertificate() {
 
                             <div className="form-group">
                                 <label className="form-label">Passing Year</label>
-                                <select name="year" className="form-input" value={form.year} onChange={handleChange} required>
-                                    <option value="">Select Year</option>
-                                    {[2023, 2024, 2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
-                                </select>
+                                <input
+                                    type="number"
+                                    name="year"
+                                    className="form-input"
+                                    placeholder="YYYY"
+                                    min="1900"
+                                    max="2100"
+                                    value={form.year}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </div>
 
                             <div className="form-group">
