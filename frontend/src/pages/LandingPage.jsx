@@ -25,7 +25,7 @@ export default function LandingPage() {
                         <h3 className="step-title">Issue Certificate</h3>
                         <p className="text-secondary">
                             Institutions upload student data and generate digitally signed certificates.
-                            An cryptographic hash is stored on the checklist.
+                            A cryptographic hash is stored on the blockchain.
                         </p>
                     </div>
                     <div className="step-card">
@@ -139,7 +139,7 @@ export default function LandingPage() {
             <div className="trust-section">
                 <h2>Uncompromised Security</h2>
                 <p>
-                    We combine the immutable trust of blockchain technology with the unbreakable security of SHA-256 hashing to create the world's most secure credentialing system.
+                    We combine the immutable trust of blockchain technology with the industry-standard security of SHA-256 hashing to create the world's most secure credentialing system.
                 </p>
                 <div className="trust-badges">
                     <div className="trust-badge">

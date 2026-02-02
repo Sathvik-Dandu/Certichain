@@ -10,9 +10,11 @@
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 4rem;
-    margin-bottom: 3rem;
+    grid-template-columns: 1.5fr 3fr;
+    /* More space for links */
+    gap: 6rem;
+    /* Increased gap */
+    margin-bottom: 4rem;
 }
 
 .footer-brand h3 {
@@ -42,8 +44,11 @@
 .link-group a {
     display: block;
     color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
     font-weight: 400;
+    font-size: 0.95rem;
+    /* Slightly larger text */
+    transition: color 0.2s ease;
 }
 
 .link-group a:hover {

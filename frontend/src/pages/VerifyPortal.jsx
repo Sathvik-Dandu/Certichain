@@ -136,22 +136,23 @@ export default function VerifyPortal() {
         </p>
       </div>
 
-      <div className="card" style={{ maxWidth: "800px", margin: "0 auto", padding: "4rem", minHeight: "600px", display: "flex", flexDirection: "column" }}>
+      <div className="card" style={{ maxWidth: "650px", margin: "0 auto", padding: "2.5rem", display: "flex", flexDirection: "column" }}>
         <h3 className="text-center mb-6">Verification Method</h3>
-        <p className="text-center mb-6 text-secondary">Choose how you would like to search for a record:</p>
+        <p className="text-center mb-6 text-secondary" style={{ fontSize: '0.95rem' }}>Choose search method:</p>
 
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "3rem", justifyContent: 'center' }}>
+
+        <div style={{ display: "flex", gap: "0.75rem", marginBottom: "2rem", justifyContent: 'center' }}>
           <button
             onClick={() => setSearchMode("id")}
             className={`btn ${searchMode === "id" ? "btn-primary" : "btn-secondary"}`}
-            style={{ flex: 1, minWidth: "120px" }}
+            style={{ flex: 1, minWidth: "100px", padding: "0.6rem 1rem" }}
           >
             By ID
           </button>
           <button
             onClick={() => setSearchMode("manual")}
             className={`btn ${searchMode === "manual" ? "btn-primary" : "btn-secondary"}`}
-            style={{ flex: 1, minWidth: "120px" }}
+            style={{ flex: 1, minWidth: "100px", padding: "0.6rem 1rem" }}
           >
             Manual Search
           </button>
@@ -159,15 +160,13 @@ export default function VerifyPortal() {
           <button
             onClick={() => setSearchMode("integrity")}
             className={`btn ${searchMode === "integrity" ? "btn-primary" : "btn-secondary"}`}
-            style={{ flex: 1, minWidth: "120px" }}
+            style={{ flex: 1, minWidth: "100px", padding: "0.6rem 1rem" }}
           >
-            Using SHA-256 Verification
+            SHA-256 Check
           </button>
-
-
         </div>
 
-        <div style={{ padding: "10px", minHeight: "300px" }}>
+        <div style={{ padding: "0.5rem" }}>
 
           {searchMode === "id" && (
             <div className="animate-fade-in" style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>

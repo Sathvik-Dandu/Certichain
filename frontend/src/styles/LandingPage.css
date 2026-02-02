@@ -90,7 +90,8 @@
 
 
 .section {
-    padding: 3rem 1.5rem;
+    padding: 4rem 1.5rem;
+    /* Reduced from 6rem for better flow */
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -128,18 +129,23 @@
 
 .step-card {
     position: relative;
-    padding: 1.5rem;
+    padding: 2rem;
+    /* Reduced from 2.5rem */
     border-radius: var(--radius-lg);
     background: var(--surface);
     border: 1px solid var(--border);
     transition: var(--transition);
     text-align: left;
+    box-shadow: var(--shadow-sm);
+    /* Default subtle shadow */
 }
 
 .step-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--secondary);
+    /* Softer long shadow */
+    border-color: rgba(0, 180, 216, 0.4);
+    /* Subtle secondary color border */
 }
 
 .step-number {
@@ -179,24 +185,29 @@
 .features-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem;
+    gap: 3rem;
+    /* Increased gap */
 }
 
 .feature-item {
     display: flex;
-    gap: 1.75rem;
+    gap: 2rem;
     align-items: flex-start;
     padding: 2rem;
+    /* Reduced from 2.5rem */
     background: var(--surface);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    border: 1px solid transparent;
+    border: 1px solid var(--border);
+    /* More consistent border start */
     transition: var(--transition);
 }
 
 .feature-item:hover {
-    border-color: var(--border-focus);
-    box-shadow: var(--shadow);
+    border-color: var(--primary);
+    /* Hover effect */
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
 }
 
 .feature-icon {
@@ -236,7 +247,9 @@
     background: var(--surface);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: var(--transition);
+    height: 100%;
+    /* Ensure equal height */
 }
 
 .audience-card:hover {
@@ -277,10 +290,13 @@
     text-align: center;
     border-radius: 30px;
     margin: 4rem 2rem;
-    padding: 6rem 3rem;
+    /* Reduced margin */
+    padding: 5rem 3rem;
+    /* Reduced padding */
     position: relative;
     overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-blue);
+    /* Use branded shadow */
 }
 
 .trust-section h2 {
