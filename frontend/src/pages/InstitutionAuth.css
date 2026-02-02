@@ -58,14 +58,14 @@
 
 .institution-auth-container .form-box.Register {
     right: 0;
-    padding: 0 100px;
-    /* Increased padding */
+    padding: 3.5rem 80px 2rem 80px;
+    /* Top padding for heading, reduced side padding */
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    /* Align to top to ensure visibility */
     overflow-y: auto;
-    /* Enable scrolling if needed */
 }
 
 /* Scrollbar for register form if content overflows */
@@ -91,6 +91,9 @@
 
 .institution-auth-container .form-box h2 {
     font-size: 2.2rem;
+    margin-bottom: 1rem;
+    /* Ensure proper spacing */
+    flex-shrink: 0;
 }
 
 /* --- Input Fields --- */
@@ -98,15 +101,14 @@
     position: relative;
     width: 100%;
     height: 50px;
-    /* Compacted input height */
-    /* Taller inputs */
-    margin-top: 20px;
-    /* Reduced spacing */
+    margin-top: 1.5rem;
+    /* Uniform vertical spacing */
+    flex-shrink: 0;
 }
 
 .institution-auth-container .input-box.file-input {
     height: auto;
-    margin-top: 20px;
+    margin-top: 1.5rem;
 }
 
 .institution-auth-container .input-box input:not([type="file"]) {
