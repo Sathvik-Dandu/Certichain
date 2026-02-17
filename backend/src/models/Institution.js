@@ -7,6 +7,11 @@ const institutionSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    registrarName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     shortCode: {
       type: String,
       required: true,

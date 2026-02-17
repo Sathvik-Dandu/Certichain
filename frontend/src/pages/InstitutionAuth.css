@@ -11,15 +11,17 @@
 
 .institution-auth-container {
     position: relative;
-    width: 900px;
-    height: 650px;
-    /* Increased height to fit Register form */
-    border: 2px solid var(--border);
-    box-shadow: var(--shadow-lg);
+    width: 750px;
+    height: 600px;
+    /* User's form_area styles */
+    background-color: #EDDCD9;
+    border: 2px solid #264143;
+    border-radius: 20px;
+    box-shadow: 3px 4px 0px 1px #E99F4C;
+
     overflow: hidden;
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    color: var(--text);
+    color: #264143;
+    /* Title color */
     transition: var(--transition);
 }
 
@@ -100,9 +102,9 @@
 .institution-auth-container .input-box {
     position: relative;
     width: 100%;
-    height: 50px;
+    height: auto;
+    /* Changed from fixed 50px to auto to accommodate stack layout */
     margin-top: 1.5rem;
-    /* Uniform vertical spacing */
     flex-shrink: 0;
 }
 
@@ -111,24 +113,27 @@
     margin-top: 1.5rem;
 }
 
+/* User requested styling */
+/* User requested styling (.form_style) */
 .institution-auth-container .input-box input:not([type="file"]) {
     width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
     outline: none;
-    font-size: 1.1rem;
-    color: var(--text);
-    font-weight: 600;
-    border-bottom: 2px solid var(--text-light);
-    padding-right: 35px;
-    transition: .5s;
+    border: 2px solid #264143;
+    box-shadow: 3px 4px 0px 1px #E99F4C;
+    padding: 12px 10px;
+    border-radius: 4px;
+    font-size: 15px;
+    background: #fff;
+    color: #264143;
+    transition: all 0.3s ease;
 }
 
-.institution-auth-container .input-box input:not([type="file"]):focus,
-.institution-auth-container .input-box input:not([type="file"]):valid {
-    border-bottom: 2px solid var(--secondary);
+.institution-auth-container .input-box input:not([type="file"]):focus {
+    transform: translateY(4px);
+    box-shadow: 1px 2px 0px 0px #E99F4C;
 }
+
+/* Removed focus/valid border-bottom styles as we are using ring/border from Tailwind */
 
 /* Autofill fixes */
 .institution-auth-container .input-box input:-webkit-autofill,
@@ -140,89 +145,74 @@
     transition: background-color 5000s ease-in-out 0s;
 }
 
+/* Label styling */
 .institution-auth-container .input-box label {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    transition: .5s;
+    position: relative;
+    display: block;
+    font-size: 0.9rem;
+    color: #264143;
+    margin-bottom: 0.25rem;
     pointer-events: none;
+    font-weight: 700;
 }
 
-.institution-auth-container .input-box input:focus~label,
-.institution-auth-container .input-box input:valid~label,
-.institution-auth-container .input-box input[value]:not([value=""])~label {
-    top: -5px;
-    font-size: 1rem;
-    color: var(--secondary);
-}
-
+/* Remove icons or style them to match */
 .institution-auth-container .input-box .icon {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    font-size: 1.5rem;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
-}
-
-.institution-auth-container .input-box input:focus~.icon,
-.institution-auth-container .input-box input:valid~.icon {
-    color: var(--secondary);
+    display: none;
+    /* Icons might clutter this specific brutalist style */
 }
 
 /* --- Submit Button --- */
+/* --- Submit Button (Adopting .btn) --- */
 .institution-auth-container .btn {
     position: relative;
     width: 100%;
-    height: 55px;
-    /* Taller button */
-    background: transparent;
-    border-radius: 40px;
+    padding: 15px;
+    margin: 25px 0px;
+    height: auto;
+
+    font-size: 15px;
+    background: #DE5499;
+    border-radius: 10px;
+    font-weight: 800;
+    box-shadow: 3px 3px 0px 0px #E99F4C;
+    border: none;
+
     cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border: 2px solid var(--secondary);
     overflow: hidden;
-    z-index: 1;
-    color: var(--text);
-    margin-top: 2rem;
-    transition: color 0.5s;
+    color: #fff;
+    transition: all 0.3s ease;
 }
 
 .institution-auth-container .btn:hover {
-    color: #fff;
+    opacity: .9;
 }
 
+.institution-auth-container .btn:focus {
+    transform: translateY(4px);
+    box-shadow: 1px 2px 0px 0px #E99F4C;
+}
+
+/* Remove old gradient on button */
 .institution-auth-container .btn::before {
-    content: "";
-    position: absolute;
-    height: 300%;
-    width: 100%;
-    background: linear-gradient(to right, var(--primary), var(--secondary));
-    top: -100%;
-    left: 0;
-    z-index: -1;
-    transition: .5s;
+    display: none;
 }
 
-.institution-auth-container .btn:hover::before {
-    top: 0;
-}
-
+/* --- Links (Adopting .link) --- */
 .institution-auth-container .regi-link {
-    font-size: 1.15rem;
+    font-size: 1rem;
     text-align: center;
-    margin: 2rem 0;
-    color: var(--text);
+    margin: 1rem 0;
+    color: #264143;
 }
 
 .institution-auth-container .regi-link a {
     text-decoration: none;
-    color: var(--secondary);
-    font-weight: 700;
+    color: #264143;
+    /* .link color */
+    font-weight: 800;
+    /* .link weight */
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -295,20 +285,21 @@
     line-height: 1.6;
 }
 
-/* --- Curved Shapes --- */
+/* --- Curved Shapes (Theme Updates) --- */
 .institution-auth-container .curved-shape {
     position: absolute;
     right: 0;
     top: -5px;
     height: 700px;
-    /* Increased cover */
     width: 1100px;
-    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    /* Updated gradient to match theme (Pink to Orange) */
+    background: linear-gradient(45deg, #DE5499, #E99F4C);
     transform: rotate(10deg) skewY(40deg);
     transform-origin: bottom right;
     transition: 0.8s ease;
     z-index: 10;
-    /* Lower than form-box */
+    border-left: 2px solid #264143;
+    /* Add border to match theme */
 }
 
 .institution-auth-container.active .curved-shape {
@@ -321,8 +312,9 @@
     top: 100%;
     height: 700px;
     width: 1100px;
-    background: var(--primary);
-    border-top: 3px solid var(--secondary);
+    /* Secondary shape color */
+    background: #E99F4C;
+    border-top: 3px solid #264143;
     transform: rotate(0deg) skewY(0deg);
     transform-origin: bottom left;
     transition: 0.8s ease;
@@ -334,7 +326,11 @@
 }
 
 /* File Upload */
+/* File Upload */
 .institution-auth-container .file-upload-label {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
     background-color: var(--surface-alt);
     color: var(--text);
     border: 1px solid var(--border);
@@ -343,9 +339,13 @@
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: var(--transition);
+    position: relative;
+    z-index: 100;
+    /* Ensure it's on top */
 }
 
 .institution-auth-container .file-upload-wrapper:hover .file-upload-label {
     border-color: var(--secondary);
     background-color: var(--background);
+    color: var(--secondary);
 }

@@ -30,9 +30,10 @@ exports.registerInstitution = async (req, res) => {
             address,
             website,
             shortCode,
+            registrarName, // Added registrarName to destructuring
         } = req.body;
 
-        if (!name || !email || !password || !shortCode) {
+        if (!name || !registrarName || !email || !password || !shortCode) {
             return res.status(400).json({ message: "Required fields missing" });
         }
 
@@ -96,8 +97,7 @@ exports.registerInstitution = async (req, res) => {
             address,
             website,
             shortCode,
-            isApproved: false,
-            isRejected: false,
+            registrarName, // Added registrarName to institution creation
             isApproved: false,
             isRejected: false,
             isProfileComplete: true,
@@ -121,6 +121,7 @@ exports.registerInstitution = async (req, res) => {
             institution: {
                 id: institution._id,
                 name: institution.name,
+                registrarName: institution.registrarName,
                 email: institution.email,
                 isApproved: institution.isApproved,
                 isProfileComplete: false
@@ -230,6 +231,8 @@ exports.googleLogin = async (req, res) => {
 
             inst = await Institution.create({
                 name: name,
+                registrarName: "Authorized Signatory", // Default for Google Login
+                email: email, strarName: "Authorized Signatory", // Default for Google Login
                 email: email,
                 emailDomain: email.split("@")[1],
                 passwordHash: "",
@@ -262,6 +265,7 @@ exports.googleLogin = async (req, res) => {
                 institution: {
                     id: inst._id,
                     name: inst.name,
+                    registrarName: inst.registrarName,
                     email: inst.email,
                     isApproved: inst.isApproved,
                     isProfileComplete: inst.isProfileComplete
@@ -308,7 +312,7 @@ exports.googleLogin = async (req, res) => {
 
 exports.completeProfile = async (req, res) => {
     try {
-        const { shortCode, address, website } = req.body;
+        const { shortCode, address, website, registrarName } = req.body;
         const institutionId = req.user.id;
 
         if (!shortCode) {
@@ -329,6 +333,7 @@ exports.completeProfile = async (req, res) => {
         inst.shortCode = shortCode;
         if (address) inst.address = address;
         if (website) inst.website = website;
+        if (registrarName) inst.registrarName = registrarName;
         if (documents.length > 0) {
             inst.documents = documents;
         }

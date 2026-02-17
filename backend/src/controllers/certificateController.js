@@ -68,8 +68,8 @@ const issueSingleCertificate = async ({
     if (file && file.mimetype === "application/pdf") {
         try {
             const modifiedPdfPath = path.join(path.dirname(file.path), `qr-${file.filename}`);
-            // Pass digitalSignature to embedder
-            await embedQrIntoPdf(file.path, qrPath, modifiedPdfPath, digitalSignature);
+            // Pass digitalSignature, institutionName, and registrarName to embedder
+            await embedQrIntoPdf(file.path, qrPath, modifiedPdfPath, digitalSignature, institution.name, institution.registrarName);
             finalFilePath = modifiedPdfPath;
         } catch (pdfErr) {
             console.error(`⚠️ PDF Embed Failed for ${studentName}:`, pdfErr);

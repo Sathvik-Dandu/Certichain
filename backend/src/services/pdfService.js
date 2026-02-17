@@ -1,13 +1,15 @@
 const fs = require("fs");
 const { PDFDocument, StandardFonts, rgb } = require("pdf-lib");
 
-const embedQrIntoPdf = async (pdfPath, qrPath, outputPath, signatureText) => {
+const embedQrIntoPdf = async (pdfPath, qrPath, outputPath, signatureText, institutionName, registrarName) => {
     const pdfBytes = fs.readFileSync(pdfPath);
     const qrImageBytes = fs.readFileSync(qrPath);
 
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const qrImage = await pdfDoc.embedPng(qrImageBytes);
     const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const signatureFont = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
 
     const pages = pdfDoc.getPages();
     const lastPage = pages[pages.length - 1];
@@ -26,72 +28,53 @@ const embedQrIntoPdf = async (pdfPath, qrPath, outputPath, signatureText) => {
     });
 
     if (signatureText) {
-        // --- Draw Stamp Logic ---
-        const stampX = 50;  // Left side, near bottom
-        const stampY = 50;
-        const radius = 35;
+        // --- Digital Signature Block Logic (Redesigned) ---
+        const { width } = lastPage.getSize();
+        const centerX = width / 2;
 
-        // Draw Outer Circle (Green)
-        lastPage.drawCircle({
-            x: stampX,
-            y: stampY,
-            size: radius,
-            borderWidth: 2,
-            borderColor: rgb(0.1, 0.6, 0.3), // Green
-            opacity: 0.1,
-            color: undefined, // Transparent fill
-        });
+        // Y-positions (calculated from bottom up to ensure spacing)
+        const labelY = 110;
+        const sigY = 85;
+        const lineY = 75;
+        const roleY = 60;
+        const orgY = 45;
 
-        // Draw Inner Circle (Green)
-        lastPage.drawCircle({
-            x: stampX,
-            y: stampY,
-            size: radius - 4,
-            borderWidth: 1,
-            borderColor: rgb(0.1, 0.6, 0.3),
-            opacity: 0.8,
-        });
+        // Helper to draw centered text
+        const drawCenteredText = (text, y, font, size, color) => {
+            const textWidth = font.widthOfTextAtSize(text, size);
+            lastPage.drawText(text, {
+                x: centerX - (textWidth / 2),
+                y: y,
+                size,
+                font,
+                color,
+            });
+        };
 
-        // "VERIFIED" Text centered
-        const verifiedText = "VERIFIED";
-        const textWidth = helveticaFont.widthOfTextAtSize(verifiedText, 10);
-        lastPage.drawText(verifiedText, {
-            x: stampX - (textWidth / 2),
-            y: stampY + 5,
-            size: 10,
-            font: helveticaFont,
-            color: rgb(0.1, 0.6, 0.3),
-        });
+        // 1. "Digitally Signed By" - Small caps feel, wide spacing
+        const labelText = "DIGITALLY SIGNED BY".split("").join(" ");
+        drawCenteredText(labelText, labelY, helveticaFont, 9, rgb(0.5, 0.5, 0.5));
 
-        // "CertiChain" Text centered below
-        const brandText = "CertiChain";
-        const brandWidth = helveticaFont.widthOfTextAtSize(brandText, 7);
-        lastPage.drawText(brandText, {
-            x: stampX - (brandWidth / 2),
-            y: stampY - 5,
-            size: 7,
-            font: helveticaFont,
-            color: rgb(0.1, 0.6, 0.3),
-        });
+        // 2. Signature Name - Script/Serif, Blue, Large
+        const sigName = registrarName || "Authorized Signatory";
+        drawCenteredText(sigName, sigY, signatureFont, 30, rgb(0.1, 0.2, 0.8)); // Blue-700 approx
 
-        // Draw a simple "tick" mark using lines inside the circle
-        // Tick coordinates relative to center (stampX, stampY)
-        const tickColor = rgb(0.1, 0.6, 0.3);
-
+        // 3. Divider Line - Centered
+        const lineWidth = 200;
         lastPage.drawLine({
-            start: { x: stampX - 8, y: stampY - 2 },
-            end: { x: stampX - 2, y: stampY - 8 },
-            thickness: 2,
-            color: tickColor,
-        });
-        lastPage.drawLine({
-            start: { x: stampX - 2, y: stampY - 8 },
-            end: { x: stampX + 10, y: stampY + 8 }, // Long stroke up
-            thickness: 2,
-            color: tickColor,
+            start: { x: centerX - (lineWidth / 2), y: lineY },
+            end: { x: centerX + (lineWidth / 2), y: lineY },
+            thickness: 1,
+            color: rgb(0.6, 0.6, 0.6), // Gray-400 approx
         });
 
+        // 4. Role & Organization - Stacked, Helvetica, Dark Grey
+        // Organization (Top of stack)
+        const instName = institutionName || "Institution Authority";
+        drawCenteredText(instName, roleY, helveticaFont, 12, rgb(0.2, 0.2, 0.2));
 
+        // Role (Bottom of stack)
+        drawCenteredText("Registrar", orgY, helveticaFont, 12, rgb(0.2, 0.2, 0.2));
     }
 
     const modifiedPdfBytes = await pdfDoc.save();

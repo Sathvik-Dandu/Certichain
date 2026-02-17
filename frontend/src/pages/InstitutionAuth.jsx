@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -21,6 +20,7 @@ export default function InstitutionAuth() {
 
     const [registerForm, setRegisterForm] = useState({
         name: "",
+        registrarName: "",
         shortCode: "",
         email: "",
         password: "",
@@ -104,7 +104,7 @@ export default function InstitutionAuth() {
             navigate("/institution/dashboard");
 
 
-            setRegisterForm({ name: "", shortCode: "", email: "", password: "", address: "", website: "" });
+            setRegisterForm({ name: "", registrarName: "", shortCode: "", email: "", password: "", address: "", website: "" });
             setDocuments([]);
         } catch (err) {
             console.error(err);
@@ -122,24 +122,24 @@ export default function InstitutionAuth() {
                     <h2 className="animation" style={{ "--D": 0, "--S": 21 }}>Login</h2>
                     <form onSubmit={handleLoginSubmit}>
                         <div className="input-box animation" style={{ "--D": 1, "--S": 22 }}>
+                            <label className="block mb-1">Email</label>
                             <input
                                 type="email"
                                 value={loginEmail}
                                 onChange={(e) => setLoginEmail(e.target.value)}
                                 required
                             />
-                            <label>Email</label>
-                            <FiUser className="icon" />
+                            <FiUser className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--D": 2, "--S": 23 }}>
+                            <label className="block mb-1">Password</label>
                             <input
                                 type="password"
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
                                 required
                             />
-                            <label>Password</label>
-                            <FiLock className="icon" />
+                            <FiLock className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--D": 3, "--S": 24 }}>
                             <button className="btn" type="submit">Login</button>
@@ -168,6 +168,7 @@ export default function InstitutionAuth() {
                     <h2 className="animation" style={{ "--li": 17, "--S": 0 }}>Register</h2>
                     <form onSubmit={handleRegisterSubmit}>
                         <div className="input-box animation" style={{ "--li": 18, "--S": 1 }}>
+                            <label className="block mb-1">Institution Name</label>
                             <input
                                 type="text"
                                 name="name"
@@ -175,10 +176,21 @@ export default function InstitutionAuth() {
                                 onChange={handleRegisterChange}
                                 required
                             />
-                            <label>Institution Name</label>
-                            <FiUser className="icon" />
+                            <FiUser className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--li": 18, "--S": 1 }}>
+                            <label className="block mb-1">Registrar Name</label>
+                            <input
+                                type="text"
+                                name="registrarName"
+                                value={registerForm.registrarName}
+                                onChange={handleRegisterChange}
+                                required
+                            />
+                            <FiUser className="icon text-gray-500 pointer-events-none" />
+                        </div>
+                        <div className="input-box animation" style={{ "--li": 18, "--S": 1 }}>
+                            <label className="block mb-1">Short Code</label>
                             <input
                                 type="text"
                                 name="shortCode"
@@ -186,10 +198,10 @@ export default function InstitutionAuth() {
                                 onChange={handleRegisterChange}
                                 required
                             />
-                            <label>Short Code</label>
-                            <FiFileText className="icon" />
+                            <FiFileText className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--li": 19, "--S": 2 }}>
+                            <label className="block mb-1">Email</label>
                             <input
                                 type="email"
                                 name="email"
@@ -197,10 +209,10 @@ export default function InstitutionAuth() {
                                 onChange={handleRegisterChange}
                                 required
                             />
-                            <label>Email</label>
-                            <FiMail className="icon" />
+                            <FiMail className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--li": 19, "--S": 3 }}>
+                            <label className="block mb-1">Password</label>
                             <input
                                 type="password"
                                 name="password"
@@ -208,41 +220,46 @@ export default function InstitutionAuth() {
                                 onChange={handleRegisterChange}
                                 required
                             />
-                            <label>Password</label>
-                            <FiLock className="icon" />
+                            <FiLock className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--li": 20, "--S": 4 }}>
+                            <label className="block mb-1">Address</label>
                             <input
                                 type="text"
                                 name="address"
                                 value={registerForm.address}
                                 onChange={handleRegisterChange}
                             />
-                            <label>Address</label>
-                            <FiMapPin className="icon" />
+                            <FiMapPin className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box animation" style={{ "--li": 20, "--S": 4 }}>
+                            <label className="block mb-1">Website</label>
                             <input
                                 type="text"
                                 name="website"
                                 value={registerForm.website}
                                 onChange={handleRegisterChange}
                             />
-                            <label>Website</label>
-                            <FiGlobe className="icon" />
+                            <FiGlobe className="icon text-gray-500 pointer-events-none" />
                         </div>
                         <div className="input-box file-input animation" style={{ "--li": 20, "--S": 4 }}>
                             <div className="file-upload-wrapper">
+                                <label className="block mb-1">Upload Documents</label>
                                 <input
+                                    id="institution-file-upload"
                                     type="file"
                                     multiple
                                     onChange={handleFileChange}
                                     accept=".pdf,.png,.jpg,.jpeg"
-                                    className="file-upload-input"
+                                    className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full p-2 rounded block"
                                 />
-                                <div className="file-upload-label">
-                                    {documents.length > 0 ? `${documents.length} files` : "Upload Documents"}
-                                </div>
+                                {documents.length > 0 && (
+                                    <ul className="mt-2 text-gray-900 dark:text-white list-disc pl-5">
+                                        {documents.map((file, i) => (
+                                            <li key={i}>{file.name}</li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                         </div>
 
