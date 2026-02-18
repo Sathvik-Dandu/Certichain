@@ -7,6 +7,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
+const nodemailer = require("nodemailer"); // Added nodemailer requirement
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -369,6 +370,97 @@ exports.getInstMe = async (req, res) => {
         res.json(inst);
     } catch (err) {
         console.error("GetMe Error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const user = await Institution.findOne({ email: req.body.email });
+
+        if (!user) {
+            return res.status(200).json({ message: "Reset link sent if email exists" });
+        }
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+
+        user.resetPasswordToken = crypto
+            .createHash("sha256")
+            .update(resetToken)
+            .digest("hex");
+
+        user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
+
+        await user.save();
+
+        // Frontend URL - assuming it runs on localhost:5173 for now, or use process.env
+        const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER || process.env.EMAIL, // Support both
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const message = `
+            <h1>Password Reset Request</h1>
+            <p>You satisfy the security requirements to reset your password.</p>
+            <p>Click the link below to reset your password:</p>
+            <a href="${resetUrl}" clicktracking=off>${resetUrl}</a>
+            <p>This link expires in 1 hour.</p>
+        `;
+
+        try {
+            await transporter.sendMail({
+                to: user.email,
+                subject: "Certichain Password Reset",
+                html: message
+            });
+
+            res.status(200).json({ message: "Reset link sent if email exists" });
+        } catch (emailError) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save();
+
+            console.error("Email send error:", emailError);
+            return res.status(500).json({ message: "Email could not be sent" });
+        }
+
+    } catch (err) {
+        console.error("Forgot Password Error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(req.params.token)
+            .digest("hex");
+
+        const user = await Institution.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: "Invalid or expired token" });
+        }
+
+        user.passwordHash = await bcrypt.hash(req.body.newPassword, 10);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        await user.save();
+
+        res.json({ message: "Password reset successful" });
+
+    } catch (err) {
+        console.error("Reset Password Error:", err);
         res.status(500).json({ message: "Server error" });
     }
 };

@@ -68,8 +68,8 @@ const issueSingleCertificate = async ({
     if (file && file.mimetype === "application/pdf") {
         try {
             const modifiedPdfPath = path.join(path.dirname(file.path), `qr-${file.filename}`);
-            // Pass digitalSignature, institutionName, and registrarName to embedder
-            await embedQrIntoPdf(file.path, qrPath, modifiedPdfPath, digitalSignature, institution.name, institution.registrarName);
+            // Pass digitalSignature, institutionName, registrarName, and issueDate to embedder
+            await embedQrIntoPdf(file.path, qrPath, modifiedPdfPath, digitalSignature, institution.name, institution.registrarName, issueDate);
             finalFilePath = modifiedPdfPath;
         } catch (pdfErr) {
             console.error(`⚠️ PDF Embed Failed for ${studentName}:`, pdfErr);
@@ -528,5 +528,29 @@ exports.forwardCertificate = async (req, res) => {
     } catch (err) {
         console.error("Forward Certificate Error:", err);
         res.status(500).json({ message: "Failed to send email" });
+    }
+};
+
+// SIMULATION ONLY: Tamper with certificate data to demonstrate security
+exports.tamperCertificate = async (req, res) => {
+    try {
+        const { certificateId } = req.params;
+        const cert = await Certificate.findOne({ certificateId });
+
+        if (!cert) {
+            return res.status(404).json({ message: "Certificate not found" });
+        }
+
+        // Corrupt the data
+        cert.studentName = cert.studentName + " [TAMPERED]";
+
+        // Save WITHOUT recalculating hash or signature (simulating DB hack)
+        await cert.save();
+
+        res.json({ message: "Certificate data tampered successfully. Verification should now fail." });
+
+    } catch (err) {
+        console.error("Tamper Error:", err);
+        res.status(500).json({ message: "Server error during tampering" });
     }
 };

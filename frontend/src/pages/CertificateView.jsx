@@ -104,6 +104,31 @@ export default function CertificateView() {
                     </div>
                 </div>
             )}
+
+            {/* DEMO PURPOSES ONLY */}
+            <div style={{ marginTop: "30px", textAlign: "center", borderTop: "1px dashed #ccc", paddingTop: "20px" }}>
+                <h4 style={{ color: "#666", marginBottom: "10px" }}>Security Demonstration</h4>
+                <button
+                    onClick={async () => {
+                        if (window.confirm("WARNING: This will corrupt the certificate data in the database to demonstrate how the digital signature verification fails. Proceed?")) {
+                            try {
+                                await api.post(`/certificates/tamper/${cert.certificateId}`);
+                                alert("Data corrupted! Reloading to check verification status...");
+                                window.location.reload();
+                            } catch (e) {
+                                alert("Tamper failed: " + (e.response?.data?.message || e.message));
+                            }
+                        }
+                    }}
+                    className="btn"
+                    style={{ backgroundColor: "#ef4444", color: "white", padding: "8px 16px", borderRadius: "4px", border: "none" }}
+                >
+                    ⚠️ Simulate Cyber Attack (Tamper Data)
+                </button>
+                <p style={{ fontSize: "0.8rem", color: "#888", marginTop: "5px" }}>
+                    Clicking this will modify the student's name in the DB without re-signing.
+                </p>
+            </div>
         </div>
     );
 }

@@ -64,7 +64,8 @@ export default function AdminDashboard() {
         <h2 className="admin-title">Admin Dashboard</h2>
       </div>
 
-      <div className="stats-grid">
+
+      <div className="admin-stats-grid">
         <SummaryCard label="Total Institutions" value={stats.totalInstitutions} />
         <SummaryCard label="Approved" value={stats.approvedInstitutions} />
         <SummaryCard label="Rejected" value={stats.rejectedInstitutions} />

@@ -162,7 +162,7 @@ export default function VerifyPortal() {
             className={`btn ${searchMode === "integrity" ? "btn-primary" : "btn-secondary"}`}
             style={{ flex: 1, minWidth: "100px", padding: "0.6rem 1rem" }}
           >
-            SHA-256 Check
+            Cryptographic Verification
           </button>
         </div>
 

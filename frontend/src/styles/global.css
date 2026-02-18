@@ -538,42 +538,7 @@ a:hover {
 }
 
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
 
-.stat-card {
-  background: var(--surface);
-  padding: 1.5rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--primary);
-  line-height: 1;
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
 
 
 .file-upload-wrapper {

@@ -54,12 +54,15 @@ router.post(
 router.get("/requests/pending", protect, requireInstitution, getInstitutionRequests);
 router.post("/requests/:requestId/reject", protect, requireInstitution, rejectRequest);
 
-const { verifyFileIntegrity } = require("../controllers/certificateController");
+const { verifyFileIntegrity, tamperCertificate } = require("../controllers/certificateController");
 router.post(
     "/public/verify-file-integrity",
     upload.single("certificateFile"),
     verifyFileIntegrity
 );
+
+// DEMO ONLY: Route to simulate tampering
+router.post("/tamper/:certificateId", protect, requireInstitution, tamperCertificate);
 
 
 router.get("/", async (req, res) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { Bar, Pie } from "react-chartjs-2";
 import {
@@ -24,6 +25,7 @@ ChartJS.register(
 );
 
 function InstitutionDashboard() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("certificates");
     const [stats, setStats] = useState(null);
     const [certificates, setCertificates] = useState([]);
@@ -177,6 +179,13 @@ function InstitutionDashboard() {
                                                 </td>
                                                 <td>{new Date(cert.createdAt).toLocaleDateString()}</td>
                                                 <td>
+                                                    <button
+                                                        className="inst-btn-view"
+                                                        onClick={() => navigate(`/cert/${cert.certificateId}`)}
+                                                        style={{ marginRight: "10px", backgroundColor: "#3b82f6", color: "white", padding: "5px 10px", borderRadius: "4px", border: "none" }}
+                                                    >
+                                                        View
+                                                    </button>
                                                     {cert.status === "ACTIVE" && (
                                                         <button
                                                             className="inst-btn-remove"

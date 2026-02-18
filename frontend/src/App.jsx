@@ -20,7 +20,10 @@ import CompleteProfile from "./pages/CompleteProfile";
 import RequestCertificate from "./pages/RequestCertificate";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+
 import Security from "./pages/Security";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -156,7 +159,7 @@ export default function App() {
       <AuthProvider>
         <Navbar />
         <div className="page-wrapper container" style={{ maxWidth: '100%', padding: 0, display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 80px)' }}>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/verify" element={<VerifyPortal />} />
@@ -165,6 +168,9 @@ export default function App() {
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/security" element={<Security />} />
+
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/request-certificate" element={<RequestCertificate />} />
               <Route path="/institution/portal" element={<InstitutionAuth />} />
               <Route path="/institution/register" element={<InstitutionAuth />} />

@@ -43,6 +43,9 @@ router.post(
     institutionController.registerInstitution
 );
 router.post("/login", institutionController.loginInstitution);
+router.post("/forgot-password", institutionController.forgotPassword);
+router.post("/reset-password/:token", institutionController.resetPassword);
+
 router.post("/auth/google", institutionController.googleLogin);
 router.post(
     "/complete-profile",
