@@ -85,7 +85,7 @@ export default function VerifyResult() {
 
     return (
         <div className="container" style={{ margin: "4rem auto", padding: "0 1rem" }}>
-            <div className="card" style={{ maxWidth: "850px", margin: "0 auto", padding: "3rem" }}>
+            <div className="card" style={{ maxWidth: "1000px", margin: "0 auto", padding: "4rem" }}>
                 <div style={{ textAlign: "center", marginBottom: "3rem" }}>
                     <h1 style={{ color: "var(--success)", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Certificate Verified </h1>
                     <p className="text-secondary" style={{ fontSize: "1.1rem" }}>This certificate is valid and secured on the blockchain.</p>
