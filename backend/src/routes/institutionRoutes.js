@@ -9,13 +9,15 @@ const { protect, requireInstitution } = require("../middleware/authMiddleware");
 const mongoose = require("mongoose");
 const { isAcademicInstitutionEmail } = require("../utils/emailValidator");
 
-const multer = require("multer");
-const path = require("path");
-
+const fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "../../uploads/institutions"));
+        const uploadPath = path.join(__dirname, "../../uploads/institutions");
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);

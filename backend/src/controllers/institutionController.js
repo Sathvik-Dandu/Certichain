@@ -65,15 +65,19 @@ exports.registerInstitution = async (req, res) => {
 
 
 
-                await axios.post('http://localhost:8000/register-institution', formData, {
+                // NOTE: This assumes the DL service is running locally on port 8000.
+                // In production, this URL should be an environment variable.
+                const dlServiceUrl = process.env.DL_SERVICE_URL || 'http://localhost:8000/register-institution';
+
+                await axios.post(dlServiceUrl, formData, {
                     headers: {
                         ...formData.getHeaders(),
                     },
                 });
                 console.log(" Files successfully forwarded to DL Service");
             } catch (dlError) {
-                console.error(" Failed to forward to DL Service:", dlError.message);
-
+                console.warn(" Warning: Failed to forward to DL Service (Non-critical):", dlError.message);
+                // We do NOT rethrow here, so registration proceeds even if DL service is down.
             }
         }
 
