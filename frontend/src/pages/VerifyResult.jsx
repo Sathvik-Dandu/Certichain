@@ -84,11 +84,11 @@ export default function VerifyResult() {
     }
 
     return (
-        <div className="container" style={{ margin: "4rem auto" }}>
-            <div className="card" style={{ maxWidth: "700px", margin: "0 auto", padding: "2rem" }}>
-                <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-                    <h1 style={{ color: "var(--success)", marginBottom: "0.5rem" }}>Certificate Verified </h1>
-                    <p className="text-secondary">This certificate is valid.</p>
+        <div className="container" style={{ margin: "4rem auto", padding: "0 1rem" }}>
+            <div className="card" style={{ maxWidth: "850px", margin: "0 auto", padding: "3rem" }}>
+                <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+                    <h1 style={{ color: "var(--success)", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Certificate Verified </h1>
+                    <p className="text-secondary" style={{ fontSize: "1.1rem" }}>This certificate is valid and secured on the blockchain.</p>
 
                     {/* Integrity Badge */}
                     <div style={{ marginTop: "1rem" }}>
@@ -103,33 +103,38 @@ export default function VerifyResult() {
 
 
 
-                <div className="grid gap-4" style={{ gridTemplateColumns: "1fr 1fr", display: "grid", gap: "1.5rem" }}>
+                <div className="grid" style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                    gap: "2rem",
+                    marginBottom: "2rem"
+                }}>
                     <div className="info-group">
-                        <label className="text-sm text-secondary uppercase">Student Name</label>
-                        <div className="text-lg font-semibold">{data.studentName}</div>
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Student Name</label>
+                        <div className="text-xl font-semibold text-gray-800">{data.studentName}</div>
                     </div>
                     <div className="info-group">
-                        <label className="text-sm text-secondary uppercase">Certificate ID</label>
-                        <div className="text-lg font-mono">{data.certificateId}</div>
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Certificate ID</label>
+                        <div className="text-lg font-mono bg-gray-50 px-2 rounded inline-block">{data.certificateId}</div>
                     </div>
                     <div className="info-group">
-                        <label className="text-sm text-secondary uppercase">Institution</label>
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Institution</label>
                         <div className="text-lg">{data.institutionName}</div>
                     </div>
                     <div className="info-group">
-                        <label className="text-sm text-secondary uppercase">Course</label>
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Course</label>
                         <div className="text-lg">{data.courseName}</div>
                     </div>
                     <div className="info-group">
-                        <label className="text-sm text-secondary uppercase">Branch</label>
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Branch</label>
                         <div className="text-lg">{data.branch}</div>
                     </div>
                     <div className="info-group">
-                        <label className="text-sm text-secondary uppercase">Year of Passing</label>
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Year of Passing</label>
                         <div className="text-lg">{data.passOutYear}</div>
                     </div>
-                    <div className="info-group" style={{ gridColumn: "span 2" }}>
-                        <label className="text-sm text-secondary uppercase">Issued At</label>
+                    <div className="info-group">
+                        <label className="text-sm text-secondary uppercase font-bold mb-1 block">Issued At</label>
                         <div className="text-lg">{new Date(data.issuedAt).toLocaleDateString()}</div>
                     </div>
 
