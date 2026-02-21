@@ -71,6 +71,12 @@ router.get("/certificate/:certificateId", async (req, res) => {
                 ipfsHash: cert.ipfsHash,
                 blockchainTxHash: cert.blockchainTxHash,
                 issuedAt: cert.createdAt,
+                issueDate: cert.issueDate,
+                signatureStatus: cert.signatureStatus,
+                adminVerifiedAt: cert.adminVerifiedAt,
+                adminVerifiedBy: cert.adminVerifiedBy,
+                verificationReason: cert.verificationReason,
+                verificationLocation: cert.verificationLocation,
                 integrityVerified,
                 signatureVerified
             },

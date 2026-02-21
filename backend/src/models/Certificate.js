@@ -29,6 +29,8 @@ const certificateSchema = new mongoose.Schema(
     },
     adminVerifiedAt: { type: Date },
     adminVerifiedBy: { type: String },
+    verificationReason: { type: String },
+    verificationLocation: { type: String },
     finalCertificateHash: { type: String },
     status: {
       type: String,

@@ -7,7 +7,10 @@ const TEMPLATE_PATH = path.join(__dirname, "../../templates/certificate_template
 
 /**
  * Fills student details into the certificate template PDF.
- * Overlays text at predefined coordinates, then embeds QR code.
+ * signatureStatus controls which verification block renders:
+ *   "PENDING_ADMIN_VERIFICATION" → yellow "Signature Not Verified"
+ *   "VERIFIED"                   → green  "Signature Verified"
+ * QR code and registrar block are always rendered exactly ONCE.
  */
 const fillCertificateTemplate = async ({
     studentName,
@@ -19,6 +22,7 @@ const fillCertificateTemplate = async ({
     outputPath,
     registrarName,
     digitalSignature,
+    signatureStatus = "PENDING_ADMIN_VERIFICATION",
 }) => {
     const templateBytes = fs.readFileSync(TEMPLATE_PATH);
     const pdfDoc = await PDFDocument.load(templateBytes);
@@ -33,83 +37,95 @@ const fillCertificateTemplate = async ({
 
     // ----------------------------------------------------------------
     // TEXT FILL — coordinates calibrated for the certificate template
-    // The template has blank lines after each label. We write just after.
-    // (x=left offset, y=from bottom). Adjust these if the template changes.
     // ----------------------------------------------------------------
-    const textColor = rgb(0.1, 0.1, 0.1);
     const fieldFont = helveticaBold;
     const fieldSize = 14;
-    const lineColor = rgb(0.55, 0.18, 0.07); // brownish-red matching template
 
     const dateStr = issueDate
         ? new Date(issueDate).toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" })
         : new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
 
-    // Fields: [text, x, y]
     const fields = [
-        [studentName, 260, height * 0.525],
-        [courseName, 190, height * 0.476],
-        [branch, 255, height * 0.427],
-        [institutionName || "N/A", 270, height * 0.379],
-        [dateStr, 250, height * 0.330],
+        [studentName, 320, height * 0.555],
+        [courseName, 210, height * 0.516],
+        [branch, 275, height * 0.472],
+        [institutionName || "N/A", 290, height * 0.440],
+        [dateStr, 270, height * 0.393],
     ];
 
     for (const [text, x, y] of fields) {
         page.drawText(String(text), {
-            x,
-            y,
+            x, y,
             size: fieldSize,
             font: fieldFont,
-            color: lineColor,
+            color: rgb(0, 0, 0),
         });
     }
 
     // ----------------------------------------------------------------
-    // QR CODE — Bottom Right
+    // QR CODE — Bottom Right (rendered ONCE)
     // ----------------------------------------------------------------
     if (qrPath && fs.existsSync(qrPath)) {
         const qrImageBytes = fs.readFileSync(qrPath);
         const qrImage = await pdfDoc.embedPng(qrImageBytes);
         const qrSize = 80;
         page.drawImage(qrImage, {
-            x: width - qrSize - 30,
-            y: 30,
+            x: width - qrSize - 65,
+            y: 90,
             width: qrSize,
             height: qrSize,
         });
     }
 
     // ----------------------------------------------------------------
-    // DIGITAL SIGNATURE BLOCK — Bottom Left (Aadhaar-style)
+    // VERIFICATION BLOCK — Bottom Left (yellow OR green, never both)
     // ----------------------------------------------------------------
     if (digitalSignature !== undefined) {
-        const sigX = 40;
-        const sigY = 50;
+        const sigX = 80;
+        const sigY = 110;
         const signerName = registrarName || "Authorized Signatory";
         const dateStrSig = issueDate
             ? new Date(issueDate).toLocaleString("en-IN")
             : new Date().toLocaleString("en-IN");
 
-        // Green checkmark
-        page.drawLine({ start: { x: sigX + 2, y: sigY + 34 }, end: { x: sigX + 5, y: sigY + 31 }, thickness: 2, color: rgb(0, 0.6, 0) });
-        page.drawLine({ start: { x: sigX + 5, y: sigY + 31 }, end: { x: sigX + 11, y: sigY + 39 }, thickness: 2, color: rgb(0, 0.6, 0) });
-        page.drawText("Signature valid", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: rgb(0, 0.6, 0) });
-
         const dark = rgb(0.2, 0.2, 0.2);
         const sz = 7;
         const lh = 9;
-        let y = sigY + 20;
-        page.drawText(`Digitally signed by ${signerName}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-        y -= lh;
-        page.drawText(`Date: ${dateStrSig}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-        y -= lh;
-        page.drawText(`Reason: CertiChain Document Verification`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-        y -= lh;
-        page.drawText(`Location: India`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
 
-        // Center registrar block
+        if (signatureStatus === "VERIFIED") {
+            // ---- GREEN: Signature Verified ----
+            const green = rgb(0, 0.6, 0);
+            page.drawLine({ start: { x: sigX + 2, y: sigY + 34 }, end: { x: sigX + 5, y: sigY + 31 }, thickness: 2, color: green });
+            page.drawLine({ start: { x: sigX + 5, y: sigY + 31 }, end: { x: sigX + 11, y: sigY + 39 }, thickness: 2, color: green });
+            page.drawText("Signature Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: green });
+
+            let y = sigY + 20;
+            page.drawText("Verified by: CertiChain Admin", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+            y -= lh;
+            page.drawText(`Date: ${new Date().toLocaleString("en-IN")}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+            y -= lh;
+            page.drawText("Reason: CertiChain Document Verification", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+            y -= lh;
+            page.drawText("Location: India", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        } else {
+            // ---- YELLOW: Signature Not Verified ----
+            const yellow = rgb(0.85, 0.59, 0.02);
+            page.drawText("!", { x: sigX + 5, y: sigY + 32, size: 14, font: helveticaBold, color: yellow });
+            page.drawText("Signature Not Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: yellow });
+
+            let y = sigY + 20;
+            page.drawText(`Digitally signed by ${signerName}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+            y -= lh;
+            page.drawText(`Date: ${dateStrSig}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+            y -= lh;
+            page.drawText("Reason: Pending CertiChain Admin Verification", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+            y -= lh;
+            page.drawText("Location: India", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        }
+
+        // ---- CENTER REGISTRAR BLOCK (rendered ONCE, outside condition) ----
         const cx = width / 2;
-        const csy = 60;
+        const csy = 120;
         const drawCentered = (text, cy, font, size, color = rgb(0, 0, 0)) => {
             const tw = font.widthOfTextAtSize(text, size);
             page.drawText(text, { x: cx - tw / 2, y: cy, size, font, color });
@@ -161,7 +177,6 @@ const embedQrIntoPdf = async (pdfPath, qrPath, outputPath, signatureText, instit
         const lineHeight = 9;
         const signerName = registrarName || "Authorized Signatory";
         const dateStr = issueDate ? new Date(issueDate).toLocaleString("en-IN") : new Date().toLocaleString("en-IN");
-        const orgName = institutionName || "CertiChain Authority";
 
         let currentY = sigY + 20;
         lastPage.drawText(`Digitally signed by ${signerName}`, { x: sigX, y: currentY, size: detailsSize, font: helveticaFont, color: detailsColor });

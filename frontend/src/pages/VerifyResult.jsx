@@ -94,24 +94,51 @@ export default function VerifyResult() {
                         </>
                     ) : (
                         <>
-                            <h1 style={{ color: "var(--success)", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Certificate Verified </h1>
+                            <h1 style={{ color: "var(--success)", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Certificate Verified ✅</h1>
                             <p className="text-secondary" style={{ fontSize: "1.1rem" }}>This certificate is valid and secured on the blockchain.</p>
                         </>
                     )}
+                </div>
 
-                    {/* Integrity Badge */}
-                    <div style={{ marginTop: "1rem" }}>
-                        {data.signatureStatus === "VERIFIED" && data.signatureVerified && (
-                            <span className="badge" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", color: "var(--primary)", border: "1px solid var(--primary)", padding: "0.5rem 1rem" }}>
-                                Digital Signature Verified ✓
-                            </span>
-                        )}
-                        {data.signatureStatus === "PENDING_ADMIN_VERIFICATION" && (
-                            <span className="badge" style={{ backgroundColor: "#fef3c7", color: "#d97706", border: "1px solid #d97706", padding: "0.5rem 1rem" }}>
-                                Signature Not Verified ?
-                            </span>
-                        )}
-                    </div>
+                {/* Validation Cards */}
+                <div style={{ display: "flex", gap: "2rem", justifyContent: "center", marginBottom: "2rem", flexWrap: "wrap" }}>
+                    {/* LEFT CARD — Not Verified (yellow) */}
+                    {data.signatureStatus === "PENDING_ADMIN_VERIFICATION" && (
+                        <div style={{
+                            flex: "1", maxWidth: "400px", padding: "1.5rem", borderRadius: "12px",
+                            border: "2px solid #d97706", backgroundColor: "#fef9e7"
+                        }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                                <span style={{ fontSize: "1.5rem" }}>⚠️</span>
+                                <span style={{ fontWeight: "700", color: "#d97706", fontSize: "1.1rem" }}>Signature Not Verified</span>
+                            </div>
+                            <div style={{ fontSize: "0.85rem", color: "#555", lineHeight: "1.8" }}>
+                                <div>Digitally signed by {data.institutionName || "Registrar"}</div>
+                                <div>Date: {new Date(data.issueDate || data.createdAt).toLocaleString("en-IN")}</div>
+                                <div>Reason: Pending CertiChain Admin Verification</div>
+                                <div>Location: India</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* RIGHT CARD — Verified (green) */}
+                    {data.signatureStatus === "VERIFIED" && (
+                        <div style={{
+                            flex: "1", maxWidth: "400px", padding: "1.5rem", borderRadius: "12px",
+                            border: "2px solid #16a34a", backgroundColor: "#f0fdf4"
+                        }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                                <span style={{ fontSize: "1.5rem" }}>✅</span>
+                                <span style={{ fontWeight: "700", color: "#16a34a", fontSize: "1.1rem" }}>Signature Valid</span>
+                            </div>
+                            <div style={{ fontSize: "0.85rem", color: "#555", lineHeight: "1.8" }}>
+                                <div>Verified by: {data.adminVerifiedBy || "CertiChain Admin"}</div>
+                                <div>Date: {data.adminVerifiedAt ? new Date(data.adminVerifiedAt).toLocaleString("en-IN") : "—"}</div>
+                                <div>Reason: {data.verificationReason || "CertiChain Document Verification"}</div>
+                                <div>Location: {data.verificationLocation || "India"}</div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
 
