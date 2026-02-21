@@ -117,7 +117,7 @@ export default function AdminDashboard() {
                     <td>
                       {inst.documents && inst.documents.length > 0 ? (
                         inst.documents.map((doc, idx) => {
-                          const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "");
+                          const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
                           return (
                             <div key={idx}>
                               <a
