@@ -41,7 +41,13 @@ export default function CertificateView() {
         <div className="certificate-container">
             <div className="certificate-header">
                 <h2 className="certificate-title">Certificate Verification</h2>
-                <div className="certificate-status">Valid Certificate</div>
+                {cert.signatureStatus === "PENDING_ADMIN_VERIFICATION" ? (
+                    <div className="certificate-status" style={{ backgroundColor: "#fef3c7", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+                        <span>⚠️</span> Pending Admin Verification
+                    </div>
+                ) : (
+                    <div className="certificate-status">Valid Certificate</div>
+                )}
             </div>
 
             <div className="certificate-body">

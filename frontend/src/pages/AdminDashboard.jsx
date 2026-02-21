@@ -5,20 +5,24 @@ import "./AdminDashboard.css";
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [pendingInstitutions, setPendingInstitutions] = useState([]);
+  const [pendingCertificates, setPendingCertificates] = useState([]);
   const [allInstitutions, setAllInstitutions] = useState([]);
   const [search, setSearch] = useState("");
+  const [loadingCertId, setLoadingCertId] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [statsRes, pendingRes, allRes] = await Promise.all([
+        const [statsRes, pendingRes, allRes, pendingCertsRes] = await Promise.all([
           api.get("/admin/stats"),
           api.get("/admin/institutions?status=pending"),
           api.get("/admin/dashboard/institutions"),
+          api.get("/admin/certificates/pending"),
         ]);
         setStats(statsRes.data);
         setPendingInstitutions(pendingRes.data);
         setAllInstitutions(allRes.data);
+        setPendingCertificates(pendingCertsRes.data);
       } catch (error) {
         console.error("Error loading admin data", error);
       }
@@ -33,6 +37,21 @@ export default function AdminDashboard() {
     // Refresh all institutions list
     const res = await api.get("/admin/dashboard/institutions");
     setAllInstitutions(res.data);
+  };
+
+  const handleApproveCertificate = async (id) => {
+    if (!window.confirm("Approve and Digitally Sign this certificate?")) return;
+    try {
+      setLoadingCertId(id);
+      await api.post(`/admin/certificates/verify/${id}`);
+      setPendingCertificates((prev) => prev.filter((c) => c._id !== id));
+      alert("Certificate Verified & Signed Successfully!");
+    } catch (error) {
+      console.error("Verification failed", error);
+      alert("Failed to verify certificate: " + (error.response?.data?.message || error.message));
+    } finally {
+      setLoadingCertId(null);
+    }
   };
 
   const handleReject = async (id) => {
@@ -74,7 +93,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="admin-section">
-        <h3 className="section-title">Pending Approvals</h3>
+        <h3 className="section-title">Pending Institution Approvals</h3>
         {pendingInstitutions.length === 0 ? (
           <p className="text-secondary">No pending requests at the moment.</p>
         ) : (
@@ -119,6 +138,59 @@ export default function AdminDashboard() {
                     <td>
                       <button className="action-btn approve" onClick={() => handleApprove(inst._id)}>Approve</button>
                       <button className="action-btn reject" onClick={() => handleReject(inst._id)}>Reject</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div className="admin-section">
+        <h3 className="section-title">Pending Certificate Approvals</h3>
+        {pendingCertificates.length === 0 ? (
+          <p className="text-secondary">No pending certificates.</p>
+        ) : (
+          <div className="table-responsive">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Course</th>
+                  <th>Institution</th>
+                  <th>Date</th>
+                  <th>File</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingCertificates.map((cert) => (
+                  <tr key={cert._id}>
+                    <td>{cert.studentName}</td>
+                    <td>{cert.courseName}</td>
+                    <td>{cert.institution?.name || "Unknown"}</td>
+                    <td>{new Date(cert.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      {cert.ipfsHash ? (
+                        <a
+                          href={`https://gateway.pinata.cloud/ipfs/${cert.ipfsHash}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="doc-link"
+                        >
+                          View PDF
+                        </a>
+                      ) : "N/A"}
+                    </td>
+                    <td>
+                      <button
+                        className="action-btn approve"
+                        onClick={() => handleApproveCertificate(cert._id)}
+                        disabled={loadingCertId === cert._id}
+                      >
+                        {loadingCertId === cert._id ? "Signing..." : "Approve & Sign"}
+                      </button>
                     </td>
                   </tr>
                 ))}

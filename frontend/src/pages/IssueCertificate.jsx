@@ -62,7 +62,7 @@ export default function IssueCertificate() {
     email: "",
     requestId: ""
   });
-  const [file, setFile] = useState(null);
+  // File upload removed — PDFs are now auto-generated from the template
 
 
   const [bulkForm, setBulkForm] = useState({
@@ -76,7 +76,7 @@ export default function IssueCertificate() {
     manualRollNumbers: ""
   });
   const [isAutoRoll, setIsAutoRoll] = useState(true);
-  const [bulkFiles, setBulkFiles] = useState([]);
+  // Bulk file upload removed — PDFs are now auto-generated from the template
 
 
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
@@ -122,11 +122,11 @@ export default function IssueCertificate() {
       payload.append("rollNumber", String(form.rollNumber));
       if (form.email) payload.append("email", form.email);
       if (form.requestId) payload.append("requestId", form.requestId);
-      if (file) payload.append("certificateFile", file);
+      // No file upload — backend auto-generates the PDF from template
 
       const res = await api.post("/certificates", payload);
       setResult(res.data);
-      setMessage("Certificate issued successfully");
+      setMessage("Certificate issued & submitted for Admin Verification.");
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "Failed to issue certificate.");
@@ -417,15 +417,7 @@ export default function IssueCertificate() {
               />
             </div>
 
-            <div className="form-group mt-4">
-              <label className="form-label">Certificate File (PDF / Image)</label>
-              <input
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg"
-                className="form-input"
-                onChange={(e) => setFile(e.target.files[0])}
-              />
-            </div>
+            {/* File upload removed — PDFs are auto-generated from template */}
 
             <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px' }}>
               {isLoading ? <ButtonLoader /> : "Issue Certificate"}
@@ -547,83 +539,7 @@ export default function IssueCertificate() {
               )}
             </div>
 
-            <div className="form-group mt-4">
-              <label className="form-label">Certificate Files (Select multiple)</label>
-              <p className="text-xs text-text-secondary mb-2">Select PDF/Image files. Ensure they sort alphabetically to match the order of names above.</p>
-              <input
-                type="file"
-                multiple
-                accept=".pdf,.png,.jpg,.jpeg"
-                className="form-input"
-                onChange={handleBulkFileChange}
-              />
-              {bulkFiles.length > 0 && (
-                <div className="mt-4 bg-surface-alt p-3 rounded border border-border file-list-container">
-                  <style>{`
-                      .file-list-container ul:hover > li {
-                        filter: blur(2px);
-                        opacity: 0.7;
-                        transform: scale(0.98);
-                        transition: all 0.3s ease;
-                      }
-                      .file-list-container ul > li:hover {
-                        filter: none;
-                        opacity: 1;
-                        transform: scale(1);
-                        z-index: 10;
-                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                      }
-                    `}</style>
-                  <h4 className="text-sm font-bold mb-2">Selected Files ({bulkFiles.length}):</h4>
-                  <p className="text-xs text-text-light mb-2">Drag and drop to reorder.</p>
-                  <ul className="pl-0 text-sm space-y-2 relative">
-                    {bulkFiles.map((f, i) => (
-                      <li
-                        key={i}
-                        className={`flex items-center justify-between p-2 bg-surface rounded border border-border cursor-move transition-all duration-300 ${draggedItemIndex === i ? 'opacity-50 border-dashed' : ''}`}
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, i)}
-                        onDragOver={(e) => handleDragOver(e, i)}
-                        onDrop={(e) => handleDrop(e, i)}
-                        onDragEnd={handleDragEnd}
-                      >
-                        <span className="text-text-secondary truncate mr-2 flex-grow">
-                          <span className="font-bold mr-2">{i + 1}.</span> {f.name} <span className="text-xs text-text-light">({(f.size / 1024).toFixed(1)} KB)</span>
-                        </span>
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleMoveFile(i, 'up')}
-                            disabled={i === 0}
-                            className="p-2 text-text-secondary hover:text-primary disabled:opacity-30 disabled:hover:text-text-secondary transition-colors"
-                            title="Move Up"
-                          >
-                            <FaArrowUp />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleMoveFile(i, 'down')}
-                            disabled={i === bulkFiles.length - 1}
-                            className="p-2 text-text-secondary hover:text-primary disabled:opacity-30 disabled:hover:text-text-secondary transition-colors"
-                            title="Move Down"
-                          >
-                            <FaArrowDown />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveFile(i)}
-                            className="p-2 text-danger hover:bg-red-50 rounded-full transition-colors"
-                            title="Remove"
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+            {/* Bulk file upload removed — PDFs are auto-generated from template */}
 
             <button type="submit" className="btn btn-primary w-full mt-4" disabled={isLoading} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px' }}>
               {isLoading ? <ButtonLoader /> : "Bulk Issue Certificates"}

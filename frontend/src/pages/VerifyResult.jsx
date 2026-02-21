@@ -87,15 +87,28 @@ export default function VerifyResult() {
         <div className="container" style={{ margin: "4rem auto", padding: "0 1rem" }}>
             <div className="card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
                 <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-                    <h1 style={{ color: "var(--success)", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Certificate Verified </h1>
-                    <p className="text-secondary" style={{ fontSize: "1.1rem" }}>This certificate is valid and secured on the blockchain.</p>
+                    {data.signatureStatus === "PENDING_ADMIN_VERIFICATION" ? (
+                        <>
+                            <h1 style={{ color: "#d97706", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Signature Pending ⚠️</h1>
+                            <p className="text-secondary" style={{ fontSize: "1.1rem" }}>This certificate is issued but waiting for Admin Verification.</p>
+                        </>
+                    ) : (
+                        <>
+                            <h1 style={{ color: "var(--success)", marginBottom: "0.5rem", fontSize: "2.5rem" }}>Certificate Verified </h1>
+                            <p className="text-secondary" style={{ fontSize: "1.1rem" }}>This certificate is valid and secured on the blockchain.</p>
+                        </>
+                    )}
 
                     {/* Integrity Badge */}
                     <div style={{ marginTop: "1rem" }}>
-
-                        {data.signatureVerified && (
+                        {data.signatureStatus === "VERIFIED" && data.signatureVerified && (
                             <span className="badge" style={{ backgroundColor: "rgba(59, 130, 246, 0.1)", color: "var(--primary)", border: "1px solid var(--primary)", padding: "0.5rem 1rem" }}>
-                                Digital Signature Verified
+                                Digital Signature Verified ✓
+                            </span>
+                        )}
+                        {data.signatureStatus === "PENDING_ADMIN_VERIFICATION" && (
+                            <span className="badge" style={{ backgroundColor: "#fef3c7", color: "#d97706", border: "1px solid #d97706", padding: "0.5rem 1rem" }}>
+                                Signature Not Verified ?
                             </span>
                         )}
                     </div>

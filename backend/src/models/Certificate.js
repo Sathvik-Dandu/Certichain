@@ -22,6 +22,14 @@ const certificateSchema = new mongoose.Schema(
     verifyUrl: { type: String },
     qrCodePath: { type: String },
     qrCodeDataUrl: { type: String },
+    signatureStatus: {
+      type: String,
+      enum: ["PENDING_ADMIN_VERIFICATION", "VERIFIED"],
+      default: "PENDING_ADMIN_VERIFICATION"
+    },
+    adminVerifiedAt: { type: Date },
+    adminVerifiedBy: { type: String },
+    finalCertificateHash: { type: String },
     status: {
       type: String,
       enum: ["ACTIVE", "REMOVED"],

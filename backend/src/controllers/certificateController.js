@@ -41,8 +41,9 @@ const issueSingleCertificate = async ({
     });
 
 
-    // Digital Signature (Calculate early to embed in PDF)
+    // Digital Signature (SKIPPED - Pending Admin Verification)
     let digitalSignature = null;
+    /* 
     if (institution.privateKey) {
         console.log("Signing Certificate with Private Key");
         const sign = crypto.createSign('SHA256');
@@ -52,29 +53,55 @@ const issueSingleCertificate = async ({
     } else {
         console.log("No private key found for signing");
     }
+    */
 
     const { generateQRCode } = require("../services/qrService");
     const { qrPath, verifyUrl } = await generateQRCode(certificateId);
 
 
-    const { embedQrIntoPdf } = require("../services/pdfService");
+    const { embedQrIntoPdf, fillCertificateTemplate } = require("../services/pdfService");
     const { uploadFileToIPFS } = require("../services/ipfsService");
     const { issueCertificateOnChain } = require("../services/blockchainService");
     const fs = require("fs");
     const path = require("path");
 
-    let finalFilePath = file ? file.path : null;
+    // --- Auto-generate PDF from template if no file is uploaded ---
+    const tempDir = path.join(__dirname, "../../uploads/certificates");
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
 
-    if (file && file.mimetype === "application/pdf") {
-        try {
-            const modifiedPdfPath = path.join(path.dirname(file.path), `qr-${file.filename}`);
-            // Pass digitalSignature, institutionName, registrarName, and issueDate to embedder
-            await embedQrIntoPdf(file.path, qrPath, modifiedPdfPath, digitalSignature, institution.name, institution.registrarName, issueDate);
-            finalFilePath = modifiedPdfPath;
-        } catch (pdfErr) {
-            console.error(`⚠️ PDF Embed Failed for ${studentName}:`, pdfErr);
+    const generatedPdfPath = path.join(tempDir, `generated-${certificateId}.pdf`);
+
+    let finalFilePath = null;
+
+    try {
+        await fillCertificateTemplate({
+            studentName,
+            courseName,
+            branch,
+            institutionName: institution.name,
+            issueDate,
+            qrPath,
+            outputPath: generatedPdfPath,
+            registrarName: institution.registrarName,
+            digitalSignature,
+        });
+        finalFilePath = generatedPdfPath;
+    } catch (genErr) {
+        console.error(`⚠️ Template fill failed for ${studentName}:`, genErr);
+        // Fallback: if a file was uploaded, use that
+        if (file && file.mimetype === "application/pdf") {
+            try {
+                const modifiedPdfPath = path.join(path.dirname(file.path), `qr-${file.filename}`);
+                await embedQrIntoPdf(file.path, qrPath, modifiedPdfPath, digitalSignature, institution.name, institution.registrarName, issueDate);
+                finalFilePath = modifiedPdfPath;
+            } catch (pdfErr) {
+                console.error(`⚠️ PDF Embed fallback also failed for ${studentName}:`, pdfErr);
+            }
+        } else if (file) {
+            finalFilePath = file.path;
         }
     }
+
 
     // Calculate File Hash (SHA-256)
     let fileHash = null;
@@ -94,13 +121,11 @@ const issueSingleCertificate = async ({
     let ipfsHash = null;
     if (finalFilePath) {
         try {
-            const fileName = file.originalname;
+            const fileName = (file && file.originalname) ? file.originalname : `${certificateId}.pdf`;
             ipfsHash = await uploadFileToIPFS(finalFilePath, fileName);
 
-
-            if (finalFilePath !== file.path) {
-                try { fs.unlinkSync(finalFilePath); } catch (e) { }
-            }
+            // Clean up generated temp file after IPFS upload
+            try { fs.unlinkSync(finalFilePath); } catch (e) { }
         } catch (ipfsErr) {
             console.error(`⚠️ IPFS Upload Failed for ${studentName}:`, ipfsErr.message);
         }
@@ -151,7 +176,8 @@ const issueSingleCertificate = async ({
         qrCodePath: qrPath,
         dataHash,
         fileHash,
-        digitalSignature
+        digitalSignature,
+        signatureStatus: "PENDING_ADMIN_VERIFICATION"
     });
 
     const qrImageUrl = `${req.protocol}://${req.get("host")}/qr/${certificateId}.png`;

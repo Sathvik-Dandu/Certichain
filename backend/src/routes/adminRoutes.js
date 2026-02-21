@@ -11,6 +11,10 @@ router.get("/institutions", protect, requireAdmin, adminController.getInstitutio
 router.put("/institutions/:id/approve", protect, requireAdmin, adminController.approveInstitution);
 router.put("/institutions/:id/reject", protect, requireAdmin, adminController.rejectInstitution);
 
+// Certificate Verifications
+router.get("/certificates/pending", protect, requireAdmin, adminController.getPendingCertificates);
+router.post("/certificates/verify/:id", protect, requireAdmin, adminController.verifyCertificate);
+
 router.get("/stats", protect, requireAdmin, adminController.getAdminStats);
 
 router.get(
@@ -50,7 +54,7 @@ router.get(
                         shortCode: 1,
                         isApproved: 1,
                         isRejected: 1,
-                        
+
                         certificatesCount: { $size: "$certs" },
                     },
                 },
