@@ -176,6 +176,28 @@
     color: #ef4444;
 }
 
+.inst-btn-view {
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    transition: var(--transition);
+    display: inline-block;
+    cursor: pointer;
+    border: none;
+}
+
+.inst-btn-view:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    color: white !important;
+}
+
 .inst-btn-remove {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;

@@ -179,13 +179,14 @@ function InstitutionDashboard() {
                                                 </td>
                                                 <td>{new Date(cert.createdAt).toLocaleDateString()}</td>
                                                 <td>
-                                                    <button
+                                                    <a
                                                         className="inst-btn-view"
-                                                        onClick={() => navigate(`/cert/${cert.certificateId}`)}
-                                                        style={{ marginRight: "10px", backgroundColor: "#3b82f6", color: "white", padding: "5px 10px", borderRadius: "4px", border: "none" }}
+                                                        href={`https://certiichain.vercel.app/verify/${cert.certificateId}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
                                                     >
                                                         View
-                                                    </button>
+                                                    </a>
                                                     {cert.status === "ACTIVE" && (
                                                         <button
                                                             className="inst-btn-remove"
