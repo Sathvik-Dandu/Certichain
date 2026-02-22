@@ -85,7 +85,7 @@ export default function VerifyResult() {
 
     return (
         <div className="container" style={{ margin: "1rem auto", padding: "0 1rem" }}>
-            <div className="card" style={{ maxWidth: "1100px", margin: "0 auto", padding: "1.5rem 2rem" }}>
+            <div className="card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "1.8rem 2.5rem" }}>
                 <div style={{ textAlign: "center", marginBottom: "1rem" }}>
                     {data.signatureStatus === "PENDING_ADMIN_VERIFICATION" ? (
                         <>
@@ -144,8 +144,8 @@ export default function VerifyResult() {
                 <div className="grid" style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(2, 1fr)",
-                    gap: "1rem 2rem",
-                    marginBottom: "1rem"
+                    gap: "1.2rem 2.5rem",
+                    marginBottom: "1.2rem"
                 }}>
                     <div className="info-group">
                         <label className="text-sm text-secondary uppercase font-bold mb-1 block">Student Name</label>
