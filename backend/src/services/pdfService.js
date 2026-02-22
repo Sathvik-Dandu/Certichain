@@ -69,12 +69,54 @@ const fillCertificateTemplate = async ({
         const qrImageBytes = fs.readFileSync(qrPath);
         const qrImage = await pdfDoc.embedPng(qrImageBytes);
         const qrSize = 80;
+        const qrX = width - qrSize - 65;
+        const qrY = 90;
         page.drawImage(qrImage, {
-            x: width - qrSize - 65,
-            y: 90,
+            x: qrX,
+            y: qrY,
             width: qrSize,
             height: qrSize,
         });
+
+        // Green verified badge on QR center — only after admin approval
+        if (signatureStatus === "VERIFIED") {
+            const badgeRadius = 14;
+            const badgeCx = qrX + qrSize / 2;
+            const badgeCy = qrY + qrSize / 2;
+
+            // White background circle (slightly larger to create contrast ring)
+            page.drawCircle({
+                x: badgeCx,
+                y: badgeCy,
+                size: badgeRadius + 2,
+                color: rgb(1, 1, 1),
+            });
+
+            // Green circle
+            page.drawCircle({
+                x: badgeCx,
+                y: badgeCy,
+                size: badgeRadius,
+                color: rgb(0, 0.55, 0),
+                borderColor: rgb(1, 1, 1),
+                borderWidth: 2,
+            });
+
+            // White checkmark inside the circle
+            const white = rgb(1, 1, 1);
+            page.drawLine({
+                start: { x: badgeCx - 6, y: badgeCy },
+                end: { x: badgeCx - 2, y: badgeCy - 5 },
+                thickness: 2.5,
+                color: white,
+            });
+            page.drawLine({
+                start: { x: badgeCx - 2, y: badgeCy - 5 },
+                end: { x: badgeCx + 7, y: badgeCy + 6 },
+                thickness: 2.5,
+                color: white,
+            });
+        }
     }
 
     // ----------------------------------------------------------------
@@ -110,7 +152,7 @@ const fillCertificateTemplate = async ({
         } else {
             // ---- YELLOW: Signature Not Verified ----
             const yellow = rgb(0.85, 0.59, 0.02);
-            page.drawText("!", { x: sigX + 5, y: sigY + 32, size: 14, font: helveticaBold, color: yellow });
+            page.drawText("?", { x: sigX + 5, y: sigY + 32, size: 14, font: helveticaBold, color: yellow });
             page.drawText("Signature Not Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: yellow });
 
             let y = sigY + 20;
