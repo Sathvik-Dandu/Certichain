@@ -196,14 +196,20 @@ const issueSingleCertificate = async ({
     }
 
     if (email) {
-        const { sendVerificationEmail } = require("../services/emailService");
+        const { sendEmail, getCertificateEmailTemplate } = require("../services/emailService");
         const certUrl = `http://localhost:5173/verify/${certificateId}`;
 
-        sendVerificationEmail(email, studentName, certUrl, {
+        const html = getCertificateEmailTemplate(studentName, certUrl, {
             courseName,
             passOutYear,
             certificateId,
             institutionName: institution.name,
+        });
+
+        sendEmail({
+            to: email,
+            subject: "🎓 Official Digital Certificate Issued - CertiChain",
+            html,
         }).catch(e => console.error("Email send failed:", e));
     }
     // -----------------------------------
@@ -535,18 +541,22 @@ exports.forwardCertificate = async (req, res) => {
             return res.status(404).json({ message: "Certificate not found" });
         }
 
-        const { sendVerificationEmail } = require("../services/emailService");
+        const { sendEmail, getCertificateEmailTemplate } = require("../services/emailService");
         const certUrl = `http://localhost:5173/verify/${certificateId}`;
 
         // Send email with "Forwarded" context
-        // reusing sendVerificationEmail but we might want a slightly different message
-        // For now, standard verification email is fine as it contains the link.
-        await sendVerificationEmail(targetEmail, cert.studentName, certUrl, {
+        const html = getCertificateEmailTemplate(cert.studentName, certUrl, {
             courseName: cert.courseName,
             passOutYear: cert.passOutYear,
             certificateId: cert.certificateId,
             institutionName: cert.institutionName, // Use stored name
             isForwarded: true // Optional flag if email service supports it
+        });
+
+        await sendEmail({
+            to: targetEmail,
+            subject: "🎓 Official Digital Certificate Shared - CertiChain",
+            html,
         });
 
         res.json({ message: `Certificate sent to ${targetEmail} successfully!` });
