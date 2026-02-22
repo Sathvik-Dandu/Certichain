@@ -79,62 +79,61 @@ const fillCertificateTemplate = async ({
 
     // ----------------------------------------------------------------
     // VERIFICATION BLOCK — Bottom Left (yellow OR green, never both)
+    // Uses signatureStatus as sole control — always renders exactly once
     // ----------------------------------------------------------------
-    if (digitalSignature !== undefined) {
-        const sigX = 80;
-        const sigY = 110;
-        const signerName = registrarName || "Authorized Signatory";
-        const dateStrSig = issueDate
-            ? new Date(issueDate).toLocaleString("en-IN")
-            : new Date().toLocaleString("en-IN");
+    const sigX = 80;
+    const sigY = 110;
+    const signerName = registrarName || "Authorized Signatory";
+    const dateStrSig = issueDate
+        ? new Date(issueDate).toLocaleString("en-IN")
+        : new Date().toLocaleString("en-IN");
 
-        const dark = rgb(0.2, 0.2, 0.2);
-        const sz = 7;
-        const lh = 9;
+    const dark = rgb(0.2, 0.2, 0.2);
+    const sz = 7;
+    const lh = 9;
 
-        if (signatureStatus === "VERIFIED") {
-            // ---- GREEN: Signature Verified ----
-            const green = rgb(0, 0.6, 0);
-            page.drawLine({ start: { x: sigX + 2, y: sigY + 34 }, end: { x: sigX + 5, y: sigY + 31 }, thickness: 2, color: green });
-            page.drawLine({ start: { x: sigX + 5, y: sigY + 31 }, end: { x: sigX + 11, y: sigY + 39 }, thickness: 2, color: green });
-            page.drawText("Signature Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: green });
+    if (signatureStatus === "VERIFIED") {
+        // ---- GREEN: Signature Verified ----
+        const green = rgb(0, 0.6, 0);
+        page.drawLine({ start: { x: sigX + 2, y: sigY + 34 }, end: { x: sigX + 5, y: sigY + 31 }, thickness: 2, color: green });
+        page.drawLine({ start: { x: sigX + 5, y: sigY + 31 }, end: { x: sigX + 11, y: sigY + 39 }, thickness: 2, color: green });
+        page.drawText("Signature Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: green });
 
-            let y = sigY + 20;
-            page.drawText("Verified by: CertiChain Admin", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-            y -= lh;
-            page.drawText(`Date: ${new Date().toLocaleString("en-IN")}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-            y -= lh;
-            page.drawText("Reason: CertiChain Document Verification", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-            y -= lh;
-            page.drawText("Location: India", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-        } else {
-            // ---- YELLOW: Signature Not Verified ----
-            const yellow = rgb(0.85, 0.59, 0.02);
-            page.drawText("!", { x: sigX + 5, y: sigY + 32, size: 14, font: helveticaBold, color: yellow });
-            page.drawText("Signature Not Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: yellow });
+        let y = sigY + 20;
+        page.drawText("Verified by: CertiChain Admin", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        y -= lh;
+        page.drawText(`Date: ${new Date().toLocaleString("en-IN")}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        y -= lh;
+        page.drawText("Reason: CertiChain Document Verification", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        y -= lh;
+        page.drawText("Location: India", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+    } else {
+        // ---- YELLOW: Signature Not Verified ----
+        const yellow = rgb(0.85, 0.59, 0.02);
+        page.drawText("!", { x: sigX + 5, y: sigY + 32, size: 14, font: helveticaBold, color: yellow });
+        page.drawText("Signature Not Verified", { x: sigX + 20, y: sigY + 35, size: 9, font: helveticaBold, color: yellow });
 
-            let y = sigY + 20;
-            page.drawText(`Digitally signed by ${signerName}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-            y -= lh;
-            page.drawText(`Date: ${dateStrSig}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-            y -= lh;
-            page.drawText("Reason: Pending CertiChain Admin Verification", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-            y -= lh;
-            page.drawText("Location: India", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
-        }
-
-        // ---- CENTER REGISTRAR BLOCK (rendered ONCE, outside condition) ----
-        const cx = width / 2;
-        const csy = 120;
-        const drawCentered = (text, cy, font, size, color = rgb(0, 0, 0)) => {
-            const tw = font.widthOfTextAtSize(text, size);
-            page.drawText(text, { x: cx - tw / 2, y: cy, size, font, color });
-        };
-        drawCentered("Digitally signed by", csy + 35, helveticaFont, 8);
-        drawCentered(signerName, csy + 12, scriptFont, 24);
-        drawCentered(institutionName || "Institution", csy - 5, helveticaBold, 10);
-        drawCentered("Registrar", csy - 15, helveticaFont, 8);
+        let y = sigY + 20;
+        page.drawText(`Digitally signed by ${signerName}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        y -= lh;
+        page.drawText(`Date: ${dateStrSig}`, { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        y -= lh;
+        page.drawText("Reason: Pending CertiChain Admin Verification", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
+        y -= lh;
+        page.drawText("Location: India", { x: sigX, y, size: sz, font: helveticaFont, color: dark });
     }
+
+    // ---- CENTER REGISTRAR BLOCK (always rendered exactly ONCE) ----
+    const cx = width / 2;
+    const csy = 120;
+    const drawCentered = (text, cy, font, size, color = rgb(0, 0, 0)) => {
+        const tw = font.widthOfTextAtSize(text, size);
+        page.drawText(text, { x: cx - tw / 2, y: cy, size, font, color });
+    };
+    drawCentered("Digitally signed by", csy + 35, helveticaFont, 8);
+    drawCentered(signerName, csy + 12, scriptFont, 24);
+    drawCentered(institutionName || "Institution", csy - 5, helveticaBold, 10);
+    drawCentered("Registrar", csy - 15, helveticaFont, 8);
 
     const modifiedBytes = await pdfDoc.save();
     fs.writeFileSync(outputPath, modifiedBytes);
