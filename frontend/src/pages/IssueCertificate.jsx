@@ -70,14 +70,13 @@ export default function IssueCertificate() {
     courseName: "",
     branch: "",
     passOutYear: "",
-    rollPattern: "",
     rollStart: "",
     rollEnd: "",
     manualRollNumbers: ""
   });
   const [isAutoRoll, setIsAutoRoll] = useState(true);
   // Bulk file upload removed — PDFs are now auto-generated from the template
-
+  const [bulkFiles, setBulkFiles] = useState([]);
 
   const [bulkProgress, setBulkProgress] = useState({ current: 0, total: 0 });
 
@@ -226,7 +225,7 @@ export default function IssueCertificate() {
     for (let i = start; i <= end; i++) {
 
 
-      rolls.push(`${bulkForm.rollPattern}${i}`);
+      rolls.push(`${i}`);
     }
     return rolls;
   };
@@ -290,7 +289,8 @@ export default function IssueCertificate() {
           results.push({
             name: names[i],
             status: "success",
-            certificateId: res.data.certificateId
+            certificateId: res.data.certificateId,
+            verificationUrl: res.data.verificationUrl
           });
         } catch (itemErr) {
           console.error(`Error for ${names[i]}:`, itemErr);
@@ -492,18 +492,7 @@ export default function IssueCertificate() {
               </div>
 
               {isAutoRoll ? (
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="text-xs text-text-secondary">Prefix (e.g. CS-2024-)</label>
-                    <input
-                      type="text"
-                      name="rollPattern"
-                      value={bulkForm.rollPattern}
-                      onChange={handleBulkChange}
-                      className="form-input text-sm"
-                      placeholder="Prefix-"
-                    />
-                  </div>
+                <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-xs text-text-secondary">Start (e.g. 101)</label>
                     <input
@@ -588,7 +577,8 @@ export default function IssueCertificate() {
                 <tr className="text-left border-b border-border">
                   <th className="p-2">Name</th>
                   <th className="p-2">Status</th>
-                  <th className="p-2">Details</th>
+                  <th className="p-2">Certificate ID</th>
+                  <th className="p-2">Verification Link</th>
                 </tr>
               </thead>
               <tbody>
@@ -597,13 +587,20 @@ export default function IssueCertificate() {
                     <td className="p-2">{r.name}</td>
                     <td className="p-2 text-success">Success</td>
                     <td className="p-2">{r.certificateId}</td>
+                    <td className="p-2">
+                      {r.verificationUrl ? (
+                        <a href={r.verificationUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline' }}>
+                          {r.verificationUrl}
+                        </a>
+                      ) : "N/A"}
+                    </td>
                   </tr>
                 ))}
                 {result.bulkResults.errors.map((e, i) => (
                   <tr key={`err-${i}`} className="border-b border-border bg-red-50 dark:bg-red-900/20">
                     <td className="p-2">{e.name}</td>
                     <td className="p-2 text-danger">Failed</td>
-                    <td className="p-2 text-danger">{e.error}</td>
+                    <td className="p-2 text-danger" colSpan="2">{e.error}</td>
                   </tr>
                 ))}
               </tbody>
