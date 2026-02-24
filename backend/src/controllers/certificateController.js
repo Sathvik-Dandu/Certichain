@@ -31,7 +31,6 @@ const issueSingleCertificate = async ({
     const yearTwoDigits = String(passOutYear).slice(-2);
     const certificateId = `${institution.shortCode}${yearTwoDigits}${rollNumber}`;
 
-    // Calculate Data Hash
     const dataHash = calculateHash({
         studentName,
         courseName,
@@ -41,9 +40,8 @@ const issueSingleCertificate = async ({
     });
 
 
-    // Digital Signature (SKIPPED - Pending Admin Verification)
+    // Digital Signature
     let digitalSignature = null;
-    /* 
     if (institution.privateKey) {
         console.log("Signing Certificate with Private Key");
         const sign = crypto.createSign('SHA256');
@@ -53,7 +51,6 @@ const issueSingleCertificate = async ({
     } else {
         console.log("No private key found for signing");
     }
-    */
 
     const { generateQRCode } = require("../services/qrService");
     const { qrPath, verifyUrl } = await generateQRCode(certificateId);

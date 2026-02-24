@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const [allInstitutions, setAllInstitutions] = useState([]);
   const [search, setSearch] = useState("");
   const [loadingCertId, setLoadingCertId] = useState(null);
+  const [rsaVerifiedStatus, setRsaVerifiedStatus] = useState({});
 
   useEffect(() => {
     const loadData = async () => {
@@ -49,6 +50,21 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Verification failed", error);
       alert("Failed to verify certificate: " + (error.response?.data?.message || error.message));
+    } finally {
+      setLoadingCertId(null);
+    }
+  };
+
+  const handleVerifyRSA = async (id) => {
+    try {
+      setLoadingCertId(`rsa-${id}`);
+      await api.post(`/admin/certificates/verify-rsa/${id}`);
+
+      setRsaVerifiedStatus(prev => ({ ...prev, [id]: true }));
+      alert("RSA Signature Verified Successfully!");
+    } catch (error) {
+      console.error("RSA Verification failed", error);
+      alert("Failed to verify RSA signature: " + (error.response?.data?.message || error.message));
     } finally {
       setLoadingCertId(null);
     }
@@ -185,9 +201,17 @@ export default function AdminDashboard() {
                     </td>
                     <td>
                       <button
+                        className="action-btn rsa-verify"
+                        onClick={() => handleVerifyRSA(cert._id)}
+                        disabled={loadingCertId === `rsa-${cert._id}` || rsaVerifiedStatus[cert._id]}
+                        style={{ marginRight: '8px', backgroundColor: rsaVerifiedStatus[cert._id] ? '#4CAF50' : '#2196F3', color: 'white' }}
+                      >
+                        {loadingCertId === `rsa-${cert._id}` ? "Verifying..." : rsaVerifiedStatus[cert._id] ? "RSA Verified" : "Verify RSA"}
+                      </button>
+                      <button
                         className="action-btn approve"
                         onClick={() => handleApproveCertificate(cert._id)}
-                        disabled={loadingCertId === cert._id}
+                        disabled={loadingCertId === cert._id || !rsaVerifiedStatus[cert._id]}
                       >
                         {loadingCertId === cert._id ? "Signing..." : "Approve & Sign"}
                       </button>

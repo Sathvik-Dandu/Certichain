@@ -14,6 +14,7 @@ router.put("/institutions/:id/reject", protect, requireAdmin, adminController.re
 // Certificate Verifications
 router.get("/certificates/pending", protect, requireAdmin, adminController.getPendingCertificates);
 router.post("/certificates/verify/:id", protect, requireAdmin, adminController.verifyCertificate);
+router.post("/certificates/verify-rsa/:id", protect, requireAdmin, adminController.verifyRSASignature);
 
 router.get("/stats", protect, requireAdmin, adminController.getAdminStats);
 
