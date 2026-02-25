@@ -11,31 +11,27 @@ const publicRoutes = require("./src/routes/publicRoutes");
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://certiichain.vercel.app"
+];
+
 app.use(
   cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:5173",
-        "https://certiichain.vercel.app",
-        process.env.FRONTEND_BASE_URL,
-      ].filter(Boolean); // Remove empty values if env not set
-
-      // Allow requests with no origin (like mobile apps or curl requests)
+    origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1) {
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        console.log("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 200, // Legacy support
   })
 );
+
 app.use(cookieParser());
 app.use(express.json());
 
