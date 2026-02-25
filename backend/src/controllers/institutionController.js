@@ -7,7 +7,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
-const nodemailer = require("nodemailer"); // Added nodemailer requirement
+const { sendEmail } = require("../lib/email");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -400,14 +400,6 @@ exports.forgotPassword = async (req, res) => {
         // Frontend URL - assuming it runs on localhost:5173 for now, or use process.env
         const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
 
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER || process.env.EMAIL, // Support both
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
         const message = `
             <h1>Password Reset Request</h1>
             <p>You satisfy the security requirements to reset your password.</p>
@@ -417,7 +409,7 @@ exports.forgotPassword = async (req, res) => {
         `;
 
         try {
-            await transporter.sendMail({
+            await sendEmail({
                 to: user.email,
                 subject: "Certichain Password Reset",
                 html: message
