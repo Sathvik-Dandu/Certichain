@@ -194,7 +194,7 @@ const issueSingleCertificate = async ({
 
     if (email) {
         const { sendEmail } = require("../lib/email");
-        const certUrl = `http://localhost:5173/verify/${certificateId}`;
+        const certUrl = `${process.env.FRONTEND_BASE_URL}verify/${certificateId}`;
 
         const emailHtml = `
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
@@ -564,7 +564,7 @@ exports.forwardCertificate = async (req, res) => {
         }
 
         const { sendEmail } = require("../lib/email");
-        const certUrl = `http://localhost:5173/verify/${certificateId}`;
+        const certUrl = `${process.env.FRONTEND_BASE_URL}verify/${certificateId}`;
 
         const emailHtml = `
             <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 0; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
