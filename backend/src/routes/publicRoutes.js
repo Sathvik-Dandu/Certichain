@@ -107,20 +107,21 @@ router.get("/search", async (req, res) => {
     try {
         const { institution, year, branch } = req.query;
 
-        const query = {};
-
-
-        query.status = "ACTIVE";
+        // Base query - handle certificates with or without 'status' field
+        const query = {
+            $or: [{ status: "ACTIVE" }, { status: { $exists: false } }]
+        };
 
         if (institution) {
-            const inst = await Institution.findOne({ shortCode: institution });
+            // Frontend sends institution name. E.g "CMR Engineering College"
+            const inst = await Institution.findOne({ name: institution });
             if (inst) {
                 query.institution = inst._id;
             } else {
-
                 return res.json([]);
             }
         }
+
         if (year) query.passOutYear = Number(year);
         if (branch) query.branch = branch;
 
