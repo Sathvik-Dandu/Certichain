@@ -67,6 +67,7 @@ export default function IssueCertificate() {
 
   const [bulkForm, setBulkForm] = useState({
     studentNames: "",
+    studentEmails: "",
     courseName: "",
     branch: "",
     passOutYear: "",
@@ -241,6 +242,15 @@ export default function IssueCertificate() {
 
       const names = bulkForm.studentNames.split(/\r?\n/).filter(line => line.trim() !== "");
 
+      const emailsText = bulkForm.studentEmails.trim();
+      let emails = [];
+      if (emailsText) {
+        emails = emailsText.split(/\r?\n/).map(line => line.trim());
+        if (emails.length > 0 && emails.length !== names.length) {
+          throw new Error(`Number of emails (${emails.length}) does not match number of students (${names.length}). Leave blank lines for students without email.`);
+        }
+      }
+
 
       const rolls = generateRollNumbers(names.length);
 
@@ -278,6 +288,10 @@ export default function IssueCertificate() {
           payload.append("branch", bulkForm.branch);
           payload.append("passOutYear", String(bulkForm.passOutYear));
           payload.append("rollNumber", rolls[i]);
+
+          if (emails.length > 0 && emails[i]) {
+            payload.append("email", emails[i]);
+          }
 
           if (bulkFiles[i]) {
             payload.append("certificateFile", bulkFiles[i]);
@@ -473,6 +487,18 @@ export default function IssueCertificate() {
                 value={bulkForm.studentNames}
                 onChange={handleBulkChange}
                 required
+              ></textarea>
+            </div>
+
+            <div className="form-group mt-4">
+              <label className="form-label">Student Emails (Optional, one per line matching names)</label>
+              <textarea
+                name="studentEmails"
+                className="form-input"
+                rows="5"
+                placeholder="alice@example.com&#10;&#10;charlie@example.com"
+                value={bulkForm.studentEmails}
+                onChange={handleBulkChange}
               ></textarea>
             </div>
 
